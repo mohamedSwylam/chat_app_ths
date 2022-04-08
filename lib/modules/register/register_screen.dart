@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../shared/components/custom_text_field.dart';
+import '../../shared/styles/icon_broken.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
 
@@ -26,41 +27,66 @@ class RegisterScreen extends StatelessWidget {
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 240,
+                  Container(
+                    height: 130,
                     child: Stack(
                       children: [
-                        cubit.userImage==null?
-                        Container(
-                          color: Colors.blue,
-                          height: 240,
-                          child: TextButton(
-                            onPressed: (){
+                        cubit.userImage==null ?
+                    Center(
+                      child: Stack(
+                      alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          CircleAvatar(
+                            radius: 64.0,
+                            backgroundColor:
+                            Colors.black,
+                            child: CircleAvatar(
+                              backgroundImage: NetworkImage('https://icons-for-free.com/iconfiles/png/512/man+person+profile+user+icon-1320073176482503236.png'),
+                              radius: 60,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
                               cubit.pickUserImage();
                             },
-                            child: Center(
-                              child: Text(
-                                'Tap to add User image',
-                                style: TextStyle(color: Colors.grey.shade800),
-                              ),
+                            icon: CircleAvatar(
+                                radius: 20,
+                                child: Icon(
+                                  IconBroken.Camera,
+                                  size: 16,
+                                )),
+                            iconSize: 20,
+                          ),
+                        ],
+                      ),
+                    ): Center(
+                      child: Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          CircleAvatar(
+                            radius: 64.0,
+                            backgroundColor:
+                            Theme.of(context).scaffoldBackgroundColor,
+                            child: CircleAvatar(
+                              backgroundImage: FileImage(File(cubit.userImage!.path)),
+                              radius: 60,
                             ),
                           ),
-                        ): InkWell(
-                          onTap: (){
-                            cubit.pickUserImage();
-                          },
-                          child: Container(
-                            height: 240,
-                            decoration: BoxDecoration(
-                              color: Colors.blue,
-                              image: DecorationImage(
-                                image: FileImage(File(cubit.userImage!.path)),
-                                fit: BoxFit.cover,
-                                opacity: 110,
-                              ),
-                            ),
+                          IconButton(
+                            onPressed: () {
+                              cubit.pickUserImage();
+                            },
+                            icon: CircleAvatar(
+                                radius: 20,
+                                child: Icon(
+                                  IconBroken.Camera,
+                                  size: 16,
+                                )),
+                            iconSize: 20,
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
 
                         SizedBox(
                           height: 80,

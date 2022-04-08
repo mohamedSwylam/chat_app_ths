@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
                 RegisterScreen.id: (context) => RegisterScreen(),
                 SettingsScreen.id: (context) => SettingsScreen(),
               },
-              initialRoute: LoginScreen.id,
+              initialRoute: RegisterScreen.id,
             );
           });
         },
