@@ -168,6 +168,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             }
                           },
                         ),
+                        SizedBox(height: 10,),
+                        CustomTextFormField(
+                          labelText: "Date Of Birth",
+                          inputType: TextInputType.datetime,
+                          onTap: (){
+                            cubit.selectDateOfBirth(context);
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Choose Date Of Birth';
+                            }
+                          },
+                        ),
                         SizedBox (height: 10,),
                         CSCPicker(
                           ///Enable disable state dropdown [OPTIONAL PARAMETER]

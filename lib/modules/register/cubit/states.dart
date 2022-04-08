@@ -3,6 +3,7 @@ abstract class RegisterStates {}
 class RegisterInitialState extends RegisterStates {}
 
 class OnChangeBusinessNameState extends RegisterStates {}
+class SelectedDateOfBirthSuccessState extends RegisterStates {}
 
 class OnChangeContactNumberState extends RegisterStates {}
 

@@ -22,7 +22,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
    String? email;
    String? image;
    String? mobile;
-   DateTime? dateOfBirth;
    String? gender;
    String? uid;
   String? address;
@@ -30,6 +29,18 @@ class RegisterCubit extends Cubit<RegisterStates> {
     'Male',
     'Female',
   ];
+  DateTime dateOfBirth = DateTime.now();
+  Future<void> selectDateOfBirth(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: dateOfBirth,
+        firstDate: DateTime(1900, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != dateOfBirth) {
+        dateOfBirth = picked;
+        emit(SelectedDateOfBirthSuccessState());
+    }
+  }
   onChangeFirstName(value) {
     gender = value;
     emit(OnChangeBusinessNameState());
@@ -61,10 +72,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
   onChangeCountry(value) {
     country = value;
     emit(OnChangeCountryState());
-  }
-  onChangeLandMark(value) {
-    landMark = value;
-    emit(OnChangeLandMark());
   }
   onChangeState(value) {
     statee = value;

@@ -10,10 +10,12 @@ class CustomTextFormField extends StatelessWidget {
       this.obscureText = false,
       this.validator,
       this.prefixText,
+      this.onTap,
       this.labelText,
       this.controller});
 
   Function(String)? onChanged;
+  Function()? onTap;
   String? hintText;
   int? minLine;
   int? maxLine;
@@ -30,6 +32,7 @@ class CustomTextFormField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText!,
       onChanged: onChanged,
+      onTap: onTap,
       validator: validator,
       keyboardType: inputType,
       minLines: minLine,
