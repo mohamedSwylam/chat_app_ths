@@ -29,6 +29,10 @@ class RegisterCubit extends Cubit<RegisterStates> {
   String? address;
 
   onChangeFirstName(value) {
+    gender = value;
+    emit(OnChangeBusinessNameState());
+  }
+  onChangGender(value) {
     firstName = value;
     emit(OnChangeBusinessNameState());
   }
@@ -52,33 +56,17 @@ class RegisterCubit extends Cubit<RegisterStates> {
     city = value;
     emit(OnChangeCityState());
   }
-
   onChangeCountry(value) {
     country = value;
     emit(OnChangeCountryState());
   }
-
-  TextEditingController? landMarkController;
-  String? landMark;
-
   onChangeLandMark(value) {
     landMark = value;
     emit(OnChangeLandMark());
   }
-
-  TextEditingController? stateController;
-  String? statee;
-
   onChangeState(value) {
     statee = value;
     emit(OnChangeState());
-  }
-
-  String? taxStatus;
-
-  onChangeTaxRegistered(value) {
-    taxStatus = value;
-    emit(OnChangeTaxRegisteredState());
   }
   final ImagePicker picker = ImagePicker();
   XFile? userImage;
@@ -129,7 +117,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
           emit(SaveToDbSuccessState());
         }
       }).then((value) {
-          service.addUser(data: {
+  /*       service.addUser(data: {
             'shopImage': shopImageUrl,
             'logo': shopLogoUrl,
             'businessName': businessName,
@@ -145,7 +133,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
             'city': city,
             'uid': service.user!.uid,
             'time': DateTime.now(),
-          });
+          });*/
           emit(SaveToDbSuccessState());
         }).then((value) {
           EasyLoading.dismiss();
@@ -157,7 +145,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
         }).catchError((error) {
           emit(SaveToDbErrorState(error.toString()));
         });
-      });
+
     }
   }
 }

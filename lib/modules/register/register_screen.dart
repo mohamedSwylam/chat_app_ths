@@ -30,13 +30,13 @@ class RegisterScreen extends StatelessWidget {
                     height: 240,
                     child: Stack(
                       children: [
-                        cubit.shopImage==null?
+                        cubit.userImage==null?
                         Container(
                           color: Colors.blue,
                           height: 240,
                           child: TextButton(
                             onPressed: (){
-                              cubit.pickShopImage();
+                              cubit.pickUserImage();
                             },
                             child: Center(
                               child: Text(
@@ -47,14 +47,14 @@ class RegisterScreen extends StatelessWidget {
                           ),
                         ): InkWell(
                           onTap: (){
-                            cubit.pickShopImage();
+                            cubit.pickUserImage();
                           },
                           child: Container(
                             height: 240,
                             decoration: BoxDecoration(
                               color: Colors.blue,
                               image: DecorationImage(
-                                image: FileImage(File(cubit.shopImage!.path)),
+                                image: FileImage(File(cubit.userImage!.path)),
                                 fit: BoxFit.cover,
                                 opacity: 110,
                               ),
@@ -77,50 +77,6 @@ class RegisterScreen extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: (){
-                                    cubit.pickLogoShopImage();
-                                  },
-                                  child: Card(
-                                    elevation: 4,
-                                    child: cubit.logoShopImage==null ? SizedBox(
-                                      height: 50,
-                                      width: 50,
-                                      child: Center(child: Text('+')),
-                                    ): ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: SizedBox(
-                                        height: 50,
-                                        width: 50,
-                                        child: Image.file(File(cubit.logoShopImage!.path),),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  cubit.businessName == null
-                                      ? ''
-                                      : cubit.businessName!,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -128,7 +84,7 @@ class RegisterScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
                     child: Column(
                       children: [
-                        CustomTextFormField(
+           /*             CustomTextFormField(
                           controller: cubit.businessNameController,
                           labelText: "Business name",
                           inputType: TextInputType.text,
@@ -308,7 +264,7 @@ class RegisterScreen extends StatelessWidget {
                           onCityChanged: (value) {
                             cubit.onChangeCity(value);
                           },
-                        ),
+                        ),*/
                       ],
                     ),
                   ),
