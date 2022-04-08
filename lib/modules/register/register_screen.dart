@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:chat_app_th/shared/styles/color.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:csc_picker/csc_picker.dart';
 import 'package:email_validator/email_validator.dart';
@@ -12,8 +13,14 @@ import '../../shared/styles/icon_broken.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   static String id='RegisterScreen';
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterStates>(
@@ -27,102 +34,114 @@ class RegisterScreen extends StatelessWidget {
             body: SingleChildScrollView(
               child: Column(
                 children: [
-                  Container(
-                    height: 130,
-                    child: Stack(
-                      children: [
-                        cubit.userImage==null ?
-                    Center(
+                  SizedBox(height: 20,),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Container(
+                      height: 130,
                       child: Stack(
-                      alignment: AlignmentDirectional.bottomEnd,
                         children: [
-                          CircleAvatar(
-                            radius: 64.0,
-                            backgroundColor:
-                            Colors.black,
-                            child: CircleAvatar(
-                              backgroundImage: NetworkImage('https://icons-for-free.com/iconfiles/png/512/man+person+profile+user+icon-1320073176482503236.png'),
-                              radius: 60,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              cubit.pickUserImage();
-                            },
-                            icon: CircleAvatar(
-                                radius: 20,
-                                child: Icon(
-                                  IconBroken.Camera,
-                                  size: 16,
-                                )),
-                            iconSize: 20,
-                          ),
-                        ],
-                      ),
-                    ): Center(
-                      child: Stack(
+                          cubit.userImage==null ?
+                      Center(
+                        child: Stack(
                         alignment: AlignmentDirectional.bottomEnd,
-                        children: [
-                          CircleAvatar(
-                            radius: 64.0,
-                            backgroundColor:
-                            Theme.of(context).scaffoldBackgroundColor,
-                            child: CircleAvatar(
-                              backgroundImage: FileImage(File(cubit.userImage!.path)),
-                              radius: 60,
+                          children: [
+                            CircleAvatar(
+                              radius: 64.0,
+                              backgroundColor:
+                              Colors.black,
+                              child: CircleAvatar(
+                                backgroundImage: NetworkImage('https://icons-for-free.com/iconfiles/png/512/man+person+profile+user+icon-1320073176482503236.png'),
+                                radius: 60,
+                                backgroundColor: Colors.white,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              cubit.pickUserImage();
-                            },
-                            icon: CircleAvatar(
-                                radius: 20,
-                                child: Icon(
-                                  IconBroken.Camera,
-                                  size: 16,
-                                )),
-                            iconSize: 20,
-                          ),
+                            IconButton(
+                              onPressed: () {
+                                cubit.pickUserImage();
+                              },
+                              icon: CircleAvatar(
+                                  radius: 20,
+                                  backgroundColor: defaultColor,
+                                  child: Icon(
+                                    IconBroken.Camera,
+                                    color: Colors.black,
+                                    size: 16,
+                                  )),
+                              iconSize: 20,
+                            ),
+                          ],
+                        ),
+                      ): Center(
+                        child: Stack(
+                          alignment: AlignmentDirectional.bottomEnd,
+                          children: [
+                            CircleAvatar(
+                              radius: 64.0,
+                              backgroundColor:
+                              Theme.of(context).scaffoldBackgroundColor,
+                              child: CircleAvatar(
+                                backgroundImage: FileImage(File(cubit.userImage!.path)),
+                                radius: 60,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                cubit.pickUserImage();
+                              },
+                              icon: CircleAvatar(
+                                  radius: 20,
+                                  child: Icon(
+                                    IconBroken.Camera,
+                                    size: 16,
+                                  )),
+                              iconSize: 20,
+                            ),
+                          ],
+                        ),
+                      ),
                         ],
                       ),
-                    ),
-
-                        SizedBox(
-                          height: 80,
-                          child: AppBar(
-                            backgroundColor: Colors.transparent,
-                            elevation: 0,
-                            actions: [
-                              IconButton(
-                                icon: const Icon(Icons.exit_to_app),
-                                onPressed: () {
-                                  FirebaseAuth.instance.signOut();
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 8, 30, 8),
+                    padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                     child: Column(
                       children: [
-           /*             CustomTextFormField(
-                          controller: cubit.businessNameController,
-                          labelText: "Business name",
-                          inputType: TextInputType.text,
-                          onChanged: (value) => cubit.onChangeBusinessName(value),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Business name';
-                            }
-                          },
-                        ),
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     children: [
+                       Container(
+                         child: CustomTextFormField(
+                                labelText: "First Name",
+                                inputType: TextInputType.text,
+                                onChanged: (value) => cubit.onChangeFirstName(value),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter First name';
+                                  }
+                                },
+                              ),
+                         width: 150,
+                       ),
+                       SizedBox(width: 10,),
+                       Container(
+                         width: 150,
+                         child: CustomTextFormField(
+                                labelText: "Last Name",
+                                inputType: TextInputType.text,
+                                onChanged: (value) => cubit.onChangeLastName(value),
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Enter Last name';
+                                  }
+                                },
+                              ),
+                       ),
+                     ],
+                   ),
+                        SizedBox(height: 10,),
                         CustomTextFormField(
-                          controller: cubit.contactNumberController,
                           labelText: "Contact Number",
                           prefixText: '+20',
                           inputType: TextInputType.phone,
@@ -134,8 +153,8 @@ class RegisterScreen extends StatelessWidget {
                             }
                           },
                         ),
+                        SizedBox(height: 10,),
                         CustomTextFormField(
-                          controller: cubit.contactNumberController,
                           labelText: "Email address",
                           inputType: TextInputType.emailAddress,
                           onChanged: (value) => cubit.onChangeEmail(value),
@@ -146,67 +165,6 @@ class RegisterScreen extends StatelessWidget {
                             bool isValid = (EmailValidator.validate(value));
                             if (isValid = false) {
                               return 'Invalid Email';
-                            }
-                          },
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          children: [
-                            const Text('Tax Registered:'),
-                            Expanded(
-                              child: DropdownButtonFormField(
-                                value: cubit.taxStatus,
-                                validator: (value) {
-                                  if (value==null) {
-                                    return 'Select Tax status';
-                                  }
-                                },
-                                hint: const Text('Select'),
-                                items: <String>['Yes', 'No']
-                                    .map<DropdownMenuItem<String>>((
-                                    String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) =>
-                                    cubit.onChangeTaxRegistered(value),
-                              ),
-                            ),
-                          ],
-                        ),
-                        if(cubit.taxStatus == 'Yes')
-                          CustomTextFormField(
-                            controller: cubit.gstNumberController,
-                            labelText: "Gst Number",
-                            inputType: TextInputType.phone,
-                            onChanged: (value) => cubit.onChangeGstNumber(value),
-                            validator: (value) {
-                              if (value!.isEmpty) {
-                                return 'Enter Gst Number';
-                              }
-                            },
-                          ),
-                        CustomTextFormField(
-                          controller: cubit.pinCodeController,
-                          labelText: "Pin Code",
-                          inputType: TextInputType.number,
-                          onChanged: (value) => cubit.onChangePinCode(value),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter Pin Code';
-                            }
-                          },
-                        ),
-                        CustomTextFormField(
-                          controller: cubit.landMarkController,
-                          labelText: "landMark",
-                          inputType: TextInputType.number,
-                          onChanged: (value) => cubit.onChangeLandMark(value),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter landMark';
                             }
                           },
                         ),
@@ -290,7 +248,41 @@ class RegisterScreen extends StatelessWidget {
                           onCityChanged: (value) {
                             cubit.onChangeCity(value);
                           },
-                        ),*/
+                        ),
+                        SizedBox(height: 10,),
+                        DecoratedBox(
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(width: 1.0, style: BorderStyle.solid, color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                            ),),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 0.0),
+                            child: DropdownButton(
+                              borderRadius: BorderRadius.circular(10),
+                              // Initial Value
+                              value: cubit.gender,
+                              // Down Arrow Icon
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              // Array list of items
+                              items: cubit.genderTypes.map((String items) {
+                                return DropdownMenuItem(
+                                  value: items,
+                                  child: Text(items),
+                                );
+                              }).toList(),
+                              // After selecting the desired option,it will
+                              // change button value to selected value
+                              onChanged: (value) {
+                                cubit.onChangeGender(value);
+                              },
+                              isExpanded: true,
+                              hint: Text('Gender'),
+                              underline: SizedBox(),
+                              elevation: 16,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),

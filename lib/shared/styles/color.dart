@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
- const defaultColor =  Colors.blue;//Color(0xFFFeee00);
+ const defaultColor =  Colors.cyan;//Color(0xFFFeee00);
  const KpColor = Color(0xfffebd69);
  const KWhiteColor = Color(0xffFCFCFC);
 const Color mainColor = const Color(0xFF151C26);

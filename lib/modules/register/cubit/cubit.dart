@@ -27,7 +27,10 @@ class RegisterCubit extends Cubit<RegisterStates> {
    String? uid;
   String? landMark;
   String? address;
-
+  var genderTypes = [
+    'Male',
+    'Female',
+  ];
   onChangeFirstName(value) {
     gender = value;
     emit(OnChangeBusinessNameState());
@@ -66,6 +69,10 @@ class RegisterCubit extends Cubit<RegisterStates> {
   }
   onChangeState(value) {
     statee = value;
+    emit(OnChangeState());
+  }
+  onChangeGender(value) {
+    gender = value;
     emit(OnChangeState());
   }
   final ImagePicker picker = ImagePicker();

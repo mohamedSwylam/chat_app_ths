@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,7 +15,21 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = SettingsCubit.get(context);
         FirebaseService service = FirebaseService();
-        return Center(child: Text('sittings screen'));
+        return Center(child:   SizedBox(
+          height: 80,
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.exit_to_app),
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+              ),
+            ],
+          ),
+        ),);
       },
     );
   }
