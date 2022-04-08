@@ -1,3 +1,4 @@
+import 'package:chat_app_th/shared/styles/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
@@ -22,6 +23,7 @@ class _AppLayoutState extends State<AppLayout> {
         return Scaffold(
           appBar: AppBar(
             title: Text(cubit.titles[cubit.currentIndex]),
+            elevation: 0.0,
             actions: [
               IconButton(onPressed: (){}, icon: Icon(IconBroken.Notification),),
               IconButton(onPressed: (){}, icon: Icon(IconBroken.Search),),
@@ -34,10 +36,10 @@ class _AppLayoutState extends State<AppLayout> {
               cubit.changeBottomNav(index);
             },
             items: [
-              BottomNavigationBarItem(icon: Icon(IconBroken.Chat),label: 'Chats'),
-              BottomNavigationBarItem(icon: Icon(IconBroken.Arrow___Right_3),label: 'Calls'),
-              BottomNavigationBarItem(icon: Icon(IconBroken.User),label: 'People'),
-              BottomNavigationBarItem(icon: Icon(IconBroken.Setting),label: 'Settings'),
+              BottomNavigationBarItem(icon: Icon(IconBroken.Chat,),label: 'Chats',backgroundColor:defaultColor),
+              BottomNavigationBarItem(icon: Icon(IconBroken.Call),label: 'Calls',backgroundColor:defaultColor),
+              BottomNavigationBarItem(icon: Icon(IconBroken.User),label: 'People',backgroundColor:defaultColor),
+              BottomNavigationBarItem(icon: Icon(IconBroken.Setting),label: 'Settings',backgroundColor:defaultColor),
             ],
           ),
         );

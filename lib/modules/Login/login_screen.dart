@@ -32,8 +32,8 @@ class LoginScreen extends StatelessWidget {
                       padding: const EdgeInsets.only(bottom: 8),
                       child: Text(
                         action == AuthAction.signIn
-                            ? 'Welcome to electronic app-vendor! Please sign in to continue.'
-                            : 'Welcome to electronic app-vendor! Please create an account to continue',
+                            ? 'Welcome to electronic Chat-App ! Please sign in to continue.'
+                            : 'Welcome to electronic Chat-App ! Please create an account to continue',
                       ),
                     );
                   },
@@ -44,12 +44,6 @@ class LoginScreen extends StatelessWidget {
                         'By signing in, you agree to our terms and conditions.',
                         style: TextStyle(color: Colors.grey),
                       ),
-                    );
-                  },
-                  headerBuilder: (context, constraints, _) {
-                    return AspectRatio(
-                      aspectRatio:1,
-                      child: Lottie.asset('assets/images/mob.json',width:80.w,height: 40.h,repeat: false),
                     );
                   },
                   providerConfigs: [

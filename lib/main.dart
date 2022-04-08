@@ -9,6 +9,7 @@ import 'package:chat_app_th/modules/settings_screen/cubit/cubit.dart';
 import 'package:chat_app_th/modules/settings_screen/settings_screen.dart';
 import 'package:chat_app_th/shared/bloc_observer.dart';
 import 'package:chat_app_th/shared/network/local/cache_helper.dart';
+import 'package:chat_app_th/shared/styles/color.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -67,8 +68,8 @@ class MyApp extends StatelessWidget {
               builder: EasyLoading.init(),
               theme: ThemeData(
                 fontFamily: 'Lato',
-                primaryColor: Colors.indigo,
-                primarySwatch: Colors.indigo,
+                primaryColor: defaultColor,
+                primarySwatch: defaultColor,
               ),
               routes: {
                 AppLayout.id: (context) => AppLayout(),
@@ -79,7 +80,7 @@ class MyApp extends StatelessWidget {
                 RegisterScreen.id: (context) => RegisterScreen(),
                 SettingsScreen.id: (context) => SettingsScreen(),
               },
-              initialRoute: AppLayout.id,
+              initialRoute: LoginScreen.id,
             );
           });
         },

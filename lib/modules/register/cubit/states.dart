@@ -24,20 +24,12 @@ class OnChangeState extends RegisterStates {}
 
 class OnChangeCityState extends RegisterStates {}
 
-class PickShopImageSuccessState extends RegisterStates {}
+class PickUserImageSuccessState extends RegisterStates {}
 
-class PickShopImageErrorState extends RegisterStates {
+class PickUserImageErrorState extends RegisterStates {
   final String error;
 
-  PickShopImageErrorState(this.error);
-}
-
-class PickLogoShopImageSuccessState extends RegisterStates {}
-
-class PickLogoShopImageErrorState extends RegisterStates {
-  final String error;
-
-  PickLogoShopImageErrorState(this.error);
+  PickUserImageErrorState(this.error);
 }
 class SaveToDbSuccessState extends RegisterStates {}
 
