@@ -25,7 +25,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
    DateTime? dateOfBirth;
    String? gender;
    String? uid;
-  String? landMark;
   String? address;
   var genderTypes = [
     'Male',
@@ -130,13 +129,8 @@ class RegisterCubit extends Cubit<RegisterStates> {
             'businessName': businessName,
             'mobile': '+2${contactNumber}',
             'email': emailAddress,
-            'taxRegistered': taxStatus,
-            'tinNumber': gstNumber == null ? null : gstNumber,
-            'pinCode': pinCode,
-            'LandMark': landMark,
             'country': country,
             'state': statee,
-            'approved': false,
             'city': city,
             'uid': service.user!.uid,
             'time': DateTime.now(),
