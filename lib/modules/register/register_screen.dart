@@ -172,6 +172,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         CustomTextFormField(
                           labelText: "Date Of Birth",
                           inputType: TextInputType.datetime,
+                          controller: cubit.dateOfBirthController,
                           onTap: (){
                             cubit.selectDateOfBirth(context);
                           },

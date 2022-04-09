@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../services/firebase_service.dart';
+import 'package:intl/intl.dart';
 
 class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(RegisterInitialState());
@@ -29,15 +30,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
     'Male',
     'Female',
   ];
-  DateTime dateOfBirth = DateTime.now();
+  var dateOfBirthController = TextEditingController();
   Future<void> selectDateOfBirth(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: dateOfBirth,
+        initialDate: DateTime.now(),
         firstDate: DateTime(1900, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != dateOfBirth) {
-        dateOfBirth = picked;
+        lastDate: DateTime.now(),);
+    if (picked != null && picked != dateOfBirthController) {
+      dateOfBirthController.text =
+            DateFormat.yMMMd().format(picked);
         emit(SelectedDateOfBirthSuccessState());
     }
   }
@@ -130,18 +132,19 @@ class RegisterCubit extends Cubit<RegisterStates> {
           emit(SaveToDbSuccessState());
         }
       }).then((value) {
-  /*       service.addUser(data: {
-            'shopImage': shopImageUrl,
-            'logo': shopLogoUrl,
-            'businessName': businessName,
-            'mobile': '+2${contactNumber}',
-            'email': emailAddress,
+        service.addUser(data: {
+            'shopImage': userImageUrl,
+            'firstName': firstName,
+            'lastName': lastName,
+            'mobile': '+2${mobile}',
+            'email': email,
             'country': country,
             'state': statee,
             'city': city,
+            'gender': gender,
             'uid': service.user!.uid,
-            'time': DateTime.now(),
-          });*/
+            'dataOfBirth': dateOfBirthController.text,
+          });
           emit(SaveToDbSuccessState());
         }).then((value) {
           EasyLoading.dismiss();
