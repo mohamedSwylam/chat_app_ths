@@ -1,65 +1,149 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:chat_app_th/layout/app_layout.dart';
+import 'package:chat_app_th/modules/register/register_screen.dart';
+import 'package:chat_app_th/shared/components/custom_text_field.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutterfire_ui/auth.dart';
-import 'package:lottie/lottie.dart';
-import '../../layout/app_layout.dart';
-import '../../shared/styles/color.dart';
+
+import '../../shared/components/components.dart';
+import '../../shared/network/local/cache_helper.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
-import 'package:sizer/sizer.dart';
-
-
 
 class LoginScreen extends StatelessWidget {
-  static String id='LoginScreen';
+  static String id = 'LoginScreen';
+  var formKey = GlobalKey<FormState>();
+  var emailController = TextEditingController();
+  var passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginCubit, LoginStates>(
-        listener: (context, state) {},
+    return BlocProvider(
+      create: (BuildContext context) => SocialLoginCubit(),
+      child: BlocConsumer<SocialLoginCubit, SocialLoginStates>(
+        listener: (context, state) {
+          if (state is SocialLoginErrorState) {
+            showSnackBar('Login Successfully', context);
+          }
+          if (state is SocialLoginSuccessState) {
+            CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
+              navigateAndFinish(context, AppLayout());
+            });
+          }
+        },
         builder: (context, state) {
-          return StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
-            // If the user is already signed-in, use it as initial data
-            initialData: FirebaseAuth.instance.currentUser,
-            builder: (context, snapshot) {
-              // User is not signed in
-              if (!snapshot.hasData) {
-                return SignInScreen(
-                  subtitleBuilder: (context, action) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 8),
-                      child: Text(
-                        action == AuthAction.signIn
-                            ? 'Welcome to electronic Chat-App ! Please sign in to continue.'
-                            : 'Welcome to electronic Chat-App ! Please create an account to continue',
-                      ),
-                    );
-                  },
-                  footerBuilder: (context, _) {
-                    return const Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(
-                        'By signing in, you agree to our terms and conditions.',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    );
-                  },
-                  providerConfigs: [
-                    EmailProviderConfiguration(),
-                    GoogleProviderConfiguration(
-                        clientId: '1:843555294764:android:0d74d4d005871108ea4b89'),
-                    PhoneProviderConfiguration(),
-                  ],
-                );
-              }
-
-              // Render your application if authenticated
-              return  AppLayout();
-            },
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'LOGIN',
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4!
+                              .copyWith(color: Colors.black),
+                        ),
+                        Text(
+                          'Login now to communicate with friends',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText1!
+                              .copyWith(color: Colors.grey),
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        CustomTextFormField(
+                          controller: emailController,
+                          inputType: TextInputType.emailAddress,
+                          labelText: 'Email address',
+                          prefix: Icons.email_outlined,
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Enter email Address';
+                            }
+                            bool isValid = (EmailValidator.validate(value));
+                            if (isValid = false) {
+                              return 'Invalid Email';
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 14,
+                        ),
+                        CustomTextFormField(
+                            controller: passwordController,
+                            inputType: TextInputType.visiblePassword,
+                            labelText: 'Password',
+                            obscureText:
+                                SocialLoginCubit.get(context).isPasswordShown,
+                            onSubmit: (value) {
+                              if (formKey.currentState!.validate()) {
+                                SocialLoginCubit.get(context).userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text);
+                              }
+                            },
+                            suffix: SocialLoginCubit.get(context).suffix,
+                            suffixPress: () {
+                              SocialLoginCubit.get(context)
+                                  .changePasswordVisibility();
+                            },
+                            prefix: Icons.lock,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'InValid Password';
+                              }
+                            }),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        defaultButtom(
+                            function: () {
+                              if (formKey.currentState!.validate()) {
+                                SocialLoginCubit.get(context).userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text);
+                              }
+                            },
+                            text: 'login',
+                            isupperCase: true),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Don\'t have an account ? ',
+                            ),
+                            defaultTextButton(() {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      RegisterrScreen(),
+                                ),
+                              );
+                            }, 'Register'),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
           );
-        }
+        },
+      ),
     );
   }
 }

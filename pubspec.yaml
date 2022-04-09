@@ -76,7 +76,7 @@ dependencies:
   mime_type: ^1.0.0
   path: ^1.8.0
   flutter_slidable: ^1.2.0
-
+  conditional_builder_null_safety: ^0.0.6
 dev_dependencies:
   flutter_test:
     sdk: flutter

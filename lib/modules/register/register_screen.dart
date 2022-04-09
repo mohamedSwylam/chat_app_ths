@@ -13,14 +13,14 @@ import '../../shared/styles/icon_broken.dart';
 import 'cubit/cubit.dart';
 import 'cubit/states.dart';
 
-class RegisterScreen extends StatefulWidget {
-  static String id='RegisterScreen';
+class RegisterrScreen extends StatefulWidget {
+  static String id='RegisterrScreen';
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<RegisterrScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends State<RegisterrScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RegisterCubit, RegisterStates>(
@@ -225,19 +225,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           ///selected item style [OPTIONAL PARAMETER]
                           selectedItemStyle: TextStyle(
-                            color: Colors.black,
+                            color: Colors.grey.shade700,
                             fontSize: 14,
                           ),
 
                           ///DropdownDialog Heading style [OPTIONAL PARAMETER]
                           dropdownHeadingStyle: TextStyle(
-                              color: Colors.black,
+                              color: Colors.grey,
                               fontSize: 17,
                               fontWeight: FontWeight.bold),
 
                           ///DropdownDialog Item style [OPTIONAL PARAMETER]
                           dropdownItemStyle: TextStyle(
-                            color: Colors.black,
+                            color: Colors.grey,
                             fontSize: 14,
                           ),
 

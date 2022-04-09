@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => RegisterCubit(),
         ),
         BlocProvider(
-          create: (BuildContext context) => LoginCubit(),
+          create: (BuildContext context) => SocialLoginCubit(),
         ),
       ],
       child: BlocConsumer<AppCubit, AppStates>(
@@ -77,10 +77,10 @@ class MyApp extends StatelessWidget {
                 ChatsScreen.id: (context) => ChatsScreen(),
                 PeopleScreen.id: (context) => PeopleScreen(),
                 LoginScreen.id: (context) => LoginScreen(),
-                RegisterScreen.id: (context) => RegisterScreen(),
+                RegisterrScreen.id: (context) => RegisterrScreen(),
                 SettingsScreen.id: (context) => SettingsScreen(),
               },
-              initialRoute: RegisterScreen.id,
+              initialRoute: LoginScreen.id,
             );
           });
         },

@@ -4,9 +4,12 @@ import 'package:chat_app_th/modules/register/cubit/states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutterfire_ui/auth.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../services/firebase_service.dart';
 import 'package:intl/intl.dart';
+
+import '../../../shared/components/components.dart';
 
 class RegisterCubit extends Cubit<RegisterStates> {
   RegisterCubit() : super(RegisterInitialState());
@@ -44,16 +47,12 @@ class RegisterCubit extends Cubit<RegisterStates> {
     }
   }
   onChangeFirstName(value) {
-    gender = value;
-    emit(OnChangeBusinessNameState());
-  }
-  onChangGender(value) {
     firstName = value;
-    emit(OnChangeBusinessNameState());
+    emit(OnChangeFirstNameState());
   }
   onChangeLastName(value) {
     lastName = value;
-    emit(OnChangeBusinessNameState());
+    emit(OnChangeLastNameState());
   }
   onChangeContactNumber(value) {
     mobile = value;
@@ -62,10 +61,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
   onChangeEmail(value) {
     email = value;
     emit(OnChangeEmailState());
-  }
-  onChangeAddress(value) {
-    address = value;
-    emit(OnChangeAddressState());
   }
   onChangeCity(value) {
     city = value;
@@ -81,7 +76,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
   }
   onChangeGender(value) {
     gender = value;
-    emit(OnChangeState());
+    emit(OnChangeGenderState());
   }
   final ImagePicker picker = ImagePicker();
   XFile? userImage;
@@ -99,28 +94,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
     });
   }
 
-  scaffold(message, context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        action: SnackBarAction(
-          label: 'Ok',
-          onPressed: () {
-            ScaffoldMessenger.of(context).clearSnackBars();
-          },
-        ),
-      ),
-    );
-  }
+
 
   saveToDb(context) {
     if (userImage == null) {
-      scaffold('Shop Image not selected', context);
+      showSnackBar('Shop Image not selected', context);
       return;
     }
     if (formKey.currentState!.validate()) {
       if (country == null || city == null || statee == null) {
-        scaffold('Selected address field completely', context);
+        showSnackBar('Selected address field completely', context);
         return;
       }
       EasyLoading.show(status: 'Please wait..');
@@ -133,7 +116,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
         }
       }).then((value) {
         service.addUser(data: {
-            'shopImage': userImageUrl,
+            'userImage': userImageUrl,
             'firstName': firstName,
             'lastName': lastName,
             'mobile': '+2${mobile}',
@@ -150,7 +133,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
           EasyLoading.dismiss();
           return Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (BuildContext context) => LoginScreen(),
+              builder: (BuildContext context) => SignInScreen(),
             ),
           );
         }).catchError((error) {

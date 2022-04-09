@@ -9,13 +9,12 @@ class OnChangeContactNumberState extends RegisterStates {}
 
 class OnChangeEmailState extends RegisterStates {}
 
-class OnChangeTaxRegisteredState extends RegisterStates {}
+class OnChangeFirstNameState extends RegisterStates {}
 
-class OnChangeGstNumberState extends RegisterStates {}
+class OnChangeLastNameState extends RegisterStates {}
 
-class OnChangePinCodeState extends RegisterStates {}
+class OnChangeGenderState extends RegisterStates {}
 
-class OnChangeLandMark extends RegisterStates {}
 
 class OnChangeAddressState extends RegisterStates {}
 

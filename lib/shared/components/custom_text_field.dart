@@ -11,13 +11,21 @@ class CustomTextFormField extends StatelessWidget {
       this.validator,
       this.prefixText,
       this.onTap,
+      this.suffixPress,
+      this.suffix,
+      this.prefix,
+      this.onSubmit,
       this.labelText,
       this.controller});
 
   Function(String)? onChanged;
   Function()? onTap;
+  Function(String)? onSubmit;
   String? hintText;
   int? minLine;
+  IconData? suffix;
+  IconData? prefix;
+  Function()? suffixPress;
   int? maxLine;
   String? labelText;
   TextEditingController? controller;
@@ -33,11 +41,17 @@ class CustomTextFormField extends StatelessWidget {
       obscureText: obscureText!,
       onChanged: onChanged,
       onTap: onTap,
+      onFieldSubmitted: onSubmit,
       validator: validator,
       keyboardType: inputType,
       minLines: minLine,
       maxLines: maxLine,
       decoration: InputDecoration(
+        prefix: Icon(prefix),
+        suffix: IconButton(
+          icon: Icon(suffix),
+          onPressed: suffixPress,
+        ),
         enabledBorder:  new OutlineInputBorder(
           borderRadius: new BorderRadius.circular(10.0),
           borderSide: new BorderSide(
