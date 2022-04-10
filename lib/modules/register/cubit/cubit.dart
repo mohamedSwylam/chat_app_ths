@@ -109,9 +109,6 @@ class RegisterCubit extends Cubit<RegisterStates> {
       emit(PickUserImageErrorState(error.toString()));
     });
   }
-
-
-
   saveToDb(context) {
     if (userImage == null) {
       showSnackBar('Shop Image not selected', context);

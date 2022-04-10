@@ -85,6 +85,8 @@ class LoginScreen extends StatelessWidget {
                             controller: passwordController,
                             inputType: TextInputType.visiblePassword,
                             labelText: 'Password',
+                            maxLine: 1,
+                            minLine: 1,
                             obscureText: SocialLoginCubit.get(context).isPasswordShown,
                             onSubmit: (value) {
                               if (formKey.currentState!.validate()) {
