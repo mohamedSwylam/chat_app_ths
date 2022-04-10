@@ -49,15 +49,7 @@ Widget defaultButtom({
         ),
       ),
     );
-Widget defaultTextButton(Function? function, String? text) =>
-    TextButton(
-      onPressed: (){
-        function;
-      },
-      child: Text(
-        text!.toUpperCase(),
-      ),
-    );
+
 showSnackBar(message, context) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(

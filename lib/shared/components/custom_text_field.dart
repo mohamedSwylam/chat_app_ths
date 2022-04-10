@@ -47,11 +47,6 @@ class CustomTextFormField extends StatelessWidget {
       minLines: minLine,
       maxLines: maxLine,
       decoration: InputDecoration(
-        prefix: Icon(prefix),
-        suffix: IconButton(
-          icon: Icon(suffix),
-          onPressed: suffixPress,
-        ),
         enabledBorder:  new OutlineInputBorder(
           borderRadius: new BorderRadius.circular(10.0),
           borderSide: new BorderSide(

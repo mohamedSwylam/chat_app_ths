@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_th/modules/Login/login_screen.dart';
 import 'package:chat_app_th/modules/register/cubit/states.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -24,6 +25,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
    String? statee;
    String? country;
    String? email;
+   String? password;
    String? image;
    String? mobile;
    String? gender;
@@ -62,6 +64,10 @@ class RegisterCubit extends Cubit<RegisterStates> {
     email = value;
     emit(OnChangeEmailState());
   }
+  onChangePassword(value) {
+    password = value;
+    emit(OnChangePasswordState());
+  }
   onChangeCity(value) {
     city = value;
     emit(OnChangeCityState());
@@ -77,6 +83,16 @@ class RegisterCubit extends Cubit<RegisterStates> {
   onChangeGender(value) {
     gender = value;
     emit(OnChangeGenderState());
+  }
+  void userRegister(BuildContext context) {
+    emit(RegisterLoadingState());
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(email: email!, password: password!)
+        .then((value) {
+      saveToDb(context);
+    }).catchError((error) {
+      emit(RegisterErrorState(error.toString()));
+    });
   }
   final ImagePicker picker = ImagePicker();
   XFile? userImage;

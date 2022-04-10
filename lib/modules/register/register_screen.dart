@@ -170,6 +170,23 @@ class _RegisterScreenState extends State<RegisterrScreen> {
                         ),
                         SizedBox(height: 10,),
                         CustomTextFormField(
+                            inputType: TextInputType.visiblePassword,
+                            labelText: 'Password',
+                            onChanged: (value) => cubit.onChangePassword(value),
+                            onSubmit: (value) {
+                           /*   if (formKey.currentState!.validate()) {
+                                SocialLoginCubit.get(context).userLogin(
+                                    email: emailController.text,
+                                    password: passwordController.text)
+                              }*/
+                            },
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'InValid Password';
+                              }
+                            }),
+                        SizedBox(height: 10,),
+                        CustomTextFormField(
                           labelText: "Date Of Birth",
                           inputType: TextInputType.datetime,
                           controller: cubit.dateOfBirthController,
@@ -312,7 +329,7 @@ class _RegisterScreenState extends State<RegisterrScreen> {
                       child: ElevatedButton(
                         child: Text('Register'),
                         onPressed: () {
-                          cubit.saveToDb(context);
+                          cubit.userRegister(context,);
                         },
                       ),
                     ),

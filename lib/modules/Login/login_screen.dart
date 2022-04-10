@@ -34,7 +34,6 @@ class LoginScreen extends StatelessWidget {
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: AppBar(),
             body: Center(
               child: SingleChildScrollView(
                 child: Padding(
@@ -51,6 +50,9 @@ class LoginScreen extends StatelessWidget {
                               .headline4!
                               .copyWith(color: Colors.black),
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Text(
                           'Login now to communicate with friends',
                           style: Theme.of(context)
@@ -59,7 +61,7 @@ class LoginScreen extends StatelessWidget {
                               .copyWith(color: Colors.grey),
                         ),
                         SizedBox(
-                          height: 14,
+                          height: 24,
                         ),
                         CustomTextFormField(
                           controller: emailController,
@@ -83,8 +85,7 @@ class LoginScreen extends StatelessWidget {
                             controller: passwordController,
                             inputType: TextInputType.visiblePassword,
                             labelText: 'Password',
-                            obscureText:
-                                SocialLoginCubit.get(context).isPasswordShown,
+                            obscureText: SocialLoginCubit.get(context).isPasswordShown,
                             onSubmit: (value) {
                               if (formKey.currentState!.validate()) {
                                 SocialLoginCubit.get(context).userLogin(
@@ -106,16 +107,25 @@ class LoginScreen extends StatelessWidget {
                         SizedBox(
                           height: 30,
                         ),
-                        defaultButtom(
-                            function: () {
-                              if (formKey.currentState!.validate()) {
-                                SocialLoginCubit.get(context).userLogin(
-                                    email: emailController.text,
-                                    password: passwordController.text);
-                              }
-                            },
-                            text: 'login',
-                            isupperCase: true),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ElevatedButton(
+                                  child: Text('Login'),
+                                  onPressed: () {
+                                    if (formKey.currentState!.validate()) {
+                                      SocialLoginCubit.get(context).userLogin(
+                                          email: emailController.text,
+                                          password: passwordController.text);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         SizedBox(
                           height: 15,
                         ),
@@ -125,14 +135,12 @@ class LoginScreen extends StatelessWidget {
                             Text(
                               'Don\'t have an account ? ',
                             ),
-                            defaultTextButton(() {
-                              Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      RegisterrScreen(),
-                                ),
-                              );
-                            }, 'Register'),
+                    TextButton(
+                      onPressed: (){
+                        navigateTo(context, RegisterrScreen());
+                      },
+                      child: Text('Register'),
+                    ),
                           ],
                         ),
                       ],
