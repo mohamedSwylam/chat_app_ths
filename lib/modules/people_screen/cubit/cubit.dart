@@ -27,12 +27,12 @@ class PeopleCubit extends Cubit<PeopleStates> {
   static PeopleCubit get(context) => BlocProvider.of(context);
   FirebaseService service = FirebaseService();
   List<UserModel> users = [];
-
+  UserModel? userModel;
   void getUsers() {
     if (users.length == 0)
       FirebaseFirestore.instance.collection('users').get().then((value) {
         value.docs.forEach((element) {
-          if (element.data()['uId'] != userModel.uId)
+          if (element.data()['uId'] != userModel!.uid)
             users.add(UserModel.fromJson(element.data()));
         });
         emit(SocialGetAllUserSuccessState());
