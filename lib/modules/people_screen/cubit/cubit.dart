@@ -9,6 +9,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import '../../../layout/cubit/cubit.dart';
+import '../../../models/user_model.dart';
 import '../../../services/firebase_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -25,5 +26,18 @@ class PeopleCubit extends Cubit<PeopleStates> {
 
   static PeopleCubit get(context) => BlocProvider.of(context);
   FirebaseService service = FirebaseService();
+  List<UserModel> users = [];
 
+  void getUsers() {
+    if (users.length == 0)
+      FirebaseFirestore.instance.collection('users').get().then((value) {
+        value.docs.forEach((element) {
+          if (element.data()['uId'] != userModel.uId)
+            users.add(UserModel.fromJson(element.data()));
+        });
+        emit(SocialGetAllUserSuccessState());
+      }).catchError((error) {
+        emit(SocialGetAllUserErrorState(error.toString()));
+      });
+  }
 }
