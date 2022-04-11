@@ -16,9 +16,7 @@ class SocialLoginCubit extends Cubit<SocialLoginStates> {
     required String password,
   }) {
     emit(SocialLoginLoadingState());
-    EasyLoading.show(status: 'Please wait..');
     FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password).then((value) {
-      EasyLoading.dismiss();
       emit(SocialLoginSuccessState(value.user!.uid));
     }).catchError((error){
       emit(SocialLoginErrorState(error.toString()));

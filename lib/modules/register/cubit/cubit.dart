@@ -146,7 +146,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
           EasyLoading.dismiss();
           return Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (BuildContext context) => SignInScreen(),
+              builder: (BuildContext context) => LoginScreen(),
             ),
           );
         }).catchError((error) {
