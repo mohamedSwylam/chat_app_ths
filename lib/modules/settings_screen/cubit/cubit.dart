@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:chat_app_th/modules/Login/login_screen.dart';
 import 'package:chat_app_th/modules/settings_screen/cubit/states.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,10 +22,17 @@ import 'package:mime_type/mime_type.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
 
+import '../../../shared/components/components.dart';
+import '../../../shared/network/local/cache_helper.dart';
+
 class SettingsCubit extends Cubit<SettingsStates> {
   SettingsCubit() : super(SettingsInitialState());
 
   static SettingsCubit get(context) => BlocProvider.of(context);
   FirebaseService service = FirebaseService();
-
+  void signOut(context) => CacheHelper.removeData(key: 'uId').then((value) {
+  FirebaseAuth.instance
+      .signOut()
+      .then((value) => navigateAndFinish(context, LoginScreen()));
+});
 }
