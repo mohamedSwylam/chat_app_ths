@@ -35,4 +35,11 @@ class PeopleCubit extends Cubit<PeopleStates> {
       emit(GetUsersListState());
     });
   }
+  getChatsList(){
+    return service.users.
+    get().then ((QuerySnapshot querySnapshot) {
+      snapshot=querySnapshot;
+      emit(GetChatsListState());
+    });
+  }
 }

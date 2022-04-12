@@ -6,8 +6,9 @@ import '../models/user_model.dart';
 import '../modules/people_screen/chat_room_screen.dart';
 import '../services/firebase_service.dart';
 import '../shared/components/components.dart';
+import '../shared/styles/color.dart';
 
-class UsersList extends StatelessWidget {
+class ChatsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FirebaseService service = FirebaseService();
@@ -27,7 +28,7 @@ class UsersList extends StatelessWidget {
               return LinearProgressIndicator();
             }
             if (snapshot.data!.size == 0) {
-              return Text("No Users");
+              return Text("No Chats yet");
             }
             return Expanded(
               child: ListView.builder(
@@ -35,7 +36,7 @@ class UsersList extends StatelessWidget {
                 itemCount: snapshot.data!.size,
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
-                  return ChatUserWidget(data: data);
+                  return MessageItem(data: data);
                 },
               ),
             );
@@ -45,9 +46,8 @@ class UsersList extends StatelessWidget {
     );
   }
 }
-
-class ChatUserWidget extends StatelessWidget {
-   ChatUserWidget({
+class MessageItem extends StatelessWidget {
+  MessageItem({
     Key? key,
     required this.data,
   }) : super(key: key);
@@ -56,32 +56,55 @@ class ChatUserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){
-        navigateTo(context, ChatRoomScreen(
-          userModel: data,
-        ));
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  '${data['userImage']}'),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Text(
-              '${data['firstName']}',
-              style: TextStyle(
-                  height: 1.4, fontWeight: FontWeight.bold),
-            ),
-          ],
+    return  Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: Container(
+        child: Text('Hello y ebn steen wes5a'),
+        padding: EdgeInsets.symmetric(
+          vertical: 5,
+          horizontal: 10,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusDirectional.only(
+            bottomEnd: Radius.circular(10.0),
+            topStart: Radius.circular(10.0),
+            topEnd: Radius.circular(10.0),
+          ),
+          color: Colors.grey[300],
         ),
       ),
     );
   }
 }
+
+class MyMessageItem extends StatelessWidget {
+  MyMessageItem({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final QueryDocumentSnapshot<Object?> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.centerEnd,
+      child: Container(
+        child: Text('Hello y ebn wes5a'),
+        padding: EdgeInsets.symmetric(
+          vertical: 5,
+          horizontal: 10,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadiusDirectional.only(
+            bottomStart: Radius.circular(10.0),
+            topStart: Radius.circular(10.0),
+            topEnd: Radius.circular(10.0),
+          ),
+          color: defaultColor.withOpacity(.2),
+        ),
+      ),
+    );
+  }
+}
+

@@ -1,4 +1,5 @@
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
+import 'package:chat_app_th/widget/chats_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +10,7 @@ import '../../shared/styles/icon_broken.dart';
 import 'cubit/states.dart';
 
 class ChatRoomScreen extends StatelessWidget {
-  UserModel userModel;
+  var userModel;
 
    ChatRoomScreen({required this.userModel, Key? key})
       : super(key: key);
@@ -46,16 +47,7 @@ class ChatRoomScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: ListView.separated(itemBuilder: (context, index) {
-                       // var message = SocialCubit.get(context).messages[index];
-                      //  if(SocialCubit.get(context).userModel.uId == message.senderID)
-                          return buildMyMessageItem();
-                        return buildMessageItem();
-                      },
-                        separatorBuilder: (context, index) =>SizedBox(height: 15,),
-                        itemCount: 10,
-                        physics: BouncingScrollPhysics(),
-                      ),
+                      child: ChatsList(),
                     ),
                     Container(
                       decoration: BoxDecoration(
@@ -113,43 +105,4 @@ class ChatRoomScreen extends StatelessWidget {
     );
   }
 
-  Widget buildMessageItem() =>
-      Align(
-        alignment: AlignmentDirectional.centerStart,
-        child: Container(
-          child: Text('Hello y ebn steen wes5a'),
-          padding: EdgeInsets.symmetric(
-            vertical: 5,
-            horizontal: 10,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadiusDirectional.only(
-              bottomEnd: Radius.circular(10.0),
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.circular(10.0),
-            ),
-            color: Colors.grey[300],
-          ),
-        ),
-      );
-
-  Widget buildMyMessageItem() =>
-      Align(
-        alignment: AlignmentDirectional.centerEnd,
-        child: Container(
-          child: Text('Hello y ebn wes5a'),
-          padding: EdgeInsets.symmetric(
-            vertical: 5,
-            horizontal: 10,
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadiusDirectional.only(
-              bottomStart: Radius.circular(10.0),
-              topStart: Radius.circular(10.0),
-              topEnd: Radius.circular(10.0),
-            ),
-            color: defaultColor.withOpacity(.2),
-          ),
-        ),
-      );
 }
