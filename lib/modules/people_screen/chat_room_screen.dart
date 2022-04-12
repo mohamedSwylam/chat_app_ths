@@ -79,11 +79,11 @@ class ChatRoomScreen extends StatelessWidget {
                             child: MaterialButton(
                               minWidth: 1.0,
                               onPressed: () {
-                             /*   SocialCubit.get(context).sendMessage(
+                               cubit.sendMessage(
                                   receiverId: userModel.uId,
                                   dateTime: DateTime.now().toString(),
                                   text: messageController.text,
-                                );*/
+                                );
                               },
                               child: Icon(
                                 IconBroken.Send,

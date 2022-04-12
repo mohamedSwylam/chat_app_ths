@@ -8,4 +8,9 @@ class SocialGetAllUserErrorState extends PeopleStates {
   final String error;
   SocialGetAllUserErrorState(this.error);
 }
+class SocialSendMessageSuccessState extends PeopleStates {}
+class SocialSendMessageErrorState extends PeopleStates {
+  final String error;
+  SocialSendMessageErrorState(this.error);
+}
 
