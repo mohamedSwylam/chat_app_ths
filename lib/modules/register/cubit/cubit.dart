@@ -89,7 +89,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email!, password: password!)
         .then((value) {
-      saveToDb(context);
+      saveToDb(context,value.user!.uid);
     }).catchError((error) {
       emit(RegisterErrorState(error.toString()));
     });
@@ -109,7 +109,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
       emit(PickUserImageErrorState(error.toString()));
     });
   }
-  saveToDb(context) {
+  saveToDb(context,uId) {
     if (userImage == null) {
       showSnackBar('Shop Image not selected', context);
       return;
@@ -138,7 +138,7 @@ class RegisterCubit extends Cubit<RegisterStates> {
             'state': statee,
             'city': city,
             'gender': gender,
-            'uid': service.user!.uid,
+            'uid': uId,
             'dataOfBirth': dateOfBirthController.text,
           });
           emit(SaveToDbSuccessState());

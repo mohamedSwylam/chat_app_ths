@@ -24,11 +24,11 @@ class LoginScreen extends StatelessWidget {
       create: (BuildContext context) => SocialLoginCubit(),
       child: BlocConsumer<SocialLoginCubit, SocialLoginStates>(
         listener: (context, state) {
-         /* if (state is SocialLoginSuccessState) {
+          if (state is SocialLoginSuccessState) {
             CacheHelper.saveData(key: 'uId', value: state.uId).then((value) {
               navigateAndFinish(context, AppLayout());
             });
-          }*/
+          }
         },
         builder: (context, state) {
           return AuthFlowBuilder<EmailFlowController>(

@@ -24,7 +24,7 @@ class SettingsScreen extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.exit_to_app),
                 onPressed: ()  {
-                 print(FirebaseAuth.instance.currentUser!.uid);
+                 FirebaseAuth.instance.signOut();
                 },
               ),
             ],
