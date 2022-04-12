@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           create: (BuildContext context) => ChatsCubit(),
         ),
         BlocProvider(
-          create: (BuildContext context) => PeopleCubit(),
+          create: (BuildContext context) => PeopleCubit()..getuserList(),
         ),
         BlocProvider(
           create: (BuildContext context) => SettingsCubit(),

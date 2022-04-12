@@ -120,10 +120,7 @@ class LoginScreen extends StatelessWidget {
                                       child: ElevatedButton(
                                         child: Text('Login'),
                                         onPressed: () {
-                                          controller.setEmailAndPassword(
-                                            emailController.text,
-                                            passwordController.text,
-                                          );
+                                          SocialLoginCubit.get(context).userLogin(email: emailController.text, password: passwordController.text);
                                         },
                                       ),
                                     ),

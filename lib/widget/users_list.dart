@@ -12,8 +12,7 @@ class UsersList extends StatelessWidget {
     return Column(
       children: [
         StreamBuilder<QuerySnapshot>(
-          stream: service.users
-              .where('uid', isNotEqualTo: cubit.userModel!.uid)
+          stream: service.users.where('uid', isNotEqualTo: service.user!.uid)
               .snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -28,13 +27,15 @@ class UsersList extends StatelessWidget {
               return Text("No Users");
             }
 
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: snapshot.data!.size,
-              itemBuilder: (context, index) {
-                var data = snapshot.data!.docs[index];
-                return ChatUserWidget(data: data);
-              },
+            return Expanded(
+              child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: snapshot.data!.size,
+                itemBuilder: (context, index) {
+                  var data = snapshot.data!.docs[index];
+                  return ChatUserWidget(data: data);
+                },
+              ),
             );
           },
         ),
@@ -53,11 +54,31 @@ class ChatUserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey.shade400,
+    return InkWell(
+      onTap: (){
+      /*  navigateTo(context, ChatDetailsScreen(
+          userModel: model,
+        ));*/
+      },
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Center(child: Text(data['mainCategory'])),
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(
+                  '${data['userImage']}'),
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            Text(
+              '${data['firstName']}',
+              style: TextStyle(
+                  height: 1.4, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }
