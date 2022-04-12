@@ -33,12 +33,12 @@ class ChatRoomScreen extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage('${userModel.image}'),
+                      backgroundImage: NetworkImage('${userModel['userImage']}'),
                     ),
                     SizedBox(
                       width: 15,
                     ),
-                    Text('${userModel.firstName}'),
+                    Text('${userModel['firstName']}'),
                   ],
                 ),
               ),
