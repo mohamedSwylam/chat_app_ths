@@ -45,7 +45,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
       dateTime: dateTime,
       text: text,
       receiverId: receiverId,
-      senderID: userModel!.uid,
+      senderID: service.user!.uid,
     );
     FirebaseFirestore.instance
         .collection('users')
@@ -57,7 +57,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
         .then((value) {
       emit(SocialSendMessageSuccessState());
     }).catchError((error) {
-      emit(SocialSendMessageErrorState());
+      emit(SocialSendMessageErrorState(error.toString()));
     });
     FirebaseFirestore.instance
         .collection('users')
@@ -69,7 +69,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
         .then((value) {
       emit(SocialSendMessageSuccessState());
     }).catchError((error) {
-      emit(SocialSendMessageErrorState());
+      emit(SocialSendMessageErrorState(error.toString()));
     });
   }
 

@@ -16,8 +16,8 @@ class ChatsList extends StatelessWidget {
     return Column(
       children: [
         StreamBuilder<QuerySnapshot>(
-          stream: service.users.where('uid', isNotEqualTo: service.user!.uid)
-              .snapshots(),
+          stream: service.users.doc(cubit.userModel!.uid).collection('chats').doc(receiverId).collection('messages')
+        .orderBy('dateTime').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -36,6 +36,8 @@ class ChatsList extends StatelessWidget {
                 itemCount: snapshot.data!.size,
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
+                  if(cubit.userModel!.uid == data['senderID'])
+                    return MyMessageItem(data: data);
                   return MessageItem(data: data);
                 },
               ),

@@ -80,7 +80,7 @@ class ChatRoomScreen extends StatelessWidget {
                               minWidth: 1.0,
                               onPressed: () {
                                cubit.sendMessage(
-                                  receiverId: userModel.uId,
+                                  receiverId: userModel['uid'],
                                   dateTime: DateTime.now().toString(),
                                   text: messageController.text,
                                 );
