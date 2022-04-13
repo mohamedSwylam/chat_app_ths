@@ -31,4 +31,4 @@ class MyColors {
   static Color endColor = Color(0xFF56DA78);
   static Color endColor2 = Color(0xFFA0C2A9);
 }
-String uId='';
+String? uId='';

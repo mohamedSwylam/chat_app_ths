@@ -93,8 +93,8 @@ class ChatRoomScreen extends StatelessWidget {
                               text: messageController.text,
                             );
                             messageController.clear();
-                            cubit.scrollController.animateTo(0,
-                                duration: Duration(milliseconds: 500),
+                            cubit.scrollController.animateTo(cubit.scrollController.position.maxScrollExtent,
+                                duration: Duration(milliseconds: 50),
                                 curve: Curves.easeIn);
                           },
                           child: Icon(

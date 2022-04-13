@@ -20,7 +20,7 @@ class ChatsList extends StatelessWidget {
       children: [
         StreamBuilder<QuerySnapshot>(
           stream: service.users.doc(service.user!.uid).collection('chats').doc(receiverId).collection('messages')
-        .orderBy('dateTime').snapshots(),
+        .orderBy('dateTime',descending: true).snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError) {
@@ -28,7 +28,7 @@ class ChatsList extends StatelessWidget {
             }
 
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return LinearProgressIndicator();
+              return CircularProgressIndicator();
             }
             if (snapshot.data!.size == 0) {
               return Text("No Chats yet");

@@ -49,7 +49,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
     );
     FirebaseFirestore.instance
         .collection('users')
-        .doc(userModel!.uid)
+        .doc(service.user!.uid)
         .collection('chats')
         .doc(receiverId)
         .collection('messages')
@@ -63,7 +63,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
         .collection('users')
         .doc(receiverId)
         .collection('chats')
-        .doc(userModel!.uid)
+        .doc(service.user!.uid)
         .collection('messages')
         .add(model.toJson())
         .then((value) {
