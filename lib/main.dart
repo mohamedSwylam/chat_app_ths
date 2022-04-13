@@ -8,6 +8,7 @@ import 'package:chat_app_th/modules/people_screen/people_screen.dart';
 import 'package:chat_app_th/modules/settings_screen/cubit/cubit.dart';
 import 'package:chat_app_th/modules/settings_screen/settings_screen.dart';
 import 'package:chat_app_th/shared/bloc_observer.dart';
+import 'package:chat_app_th/shared/components/constants.dart';
 import 'package:chat_app_th/shared/network/local/cache_helper.dart';
 import 'package:chat_app_th/shared/styles/color.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,10 +29,22 @@ main() async {
   await Firebase.initializeApp();
   Bloc.observer = MyBlocObserver();
   await CacheHelper.init();
-  runApp(MyApp());
+  Widget widget;
+  uId = CacheHelper.getData(key: 'uId');
+  if(uId != null){
+    widget = AppLayout();
+  }else{
+    widget=LoginScreen();
+  }
+  runApp(MyApp(
+    startWidget: widget,
+  ));
 }
 
 class MyApp extends StatelessWidget {
+  final Widget? startWidget;
+
+  MyApp({this.startWidget});
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(

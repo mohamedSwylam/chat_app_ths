@@ -16,7 +16,7 @@ class ChatsList extends StatelessWidget {
     return Column(
       children: [
         StreamBuilder<QuerySnapshot>(
-          stream: service.users.doc(cubit.userModel!.uid).collection('chats').doc(receiverId).collection('messages')
+          stream: service.users.doc(cubit.userModel!.uid).collection('chats').doc(cubit.userModel!.uid).collection('messages')
         .orderBy('dateTime').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -61,7 +61,7 @@ class MessageItem extends StatelessWidget {
     return  Align(
       alignment: AlignmentDirectional.centerStart,
       child: Container(
-        child: Text('Hello y ebn steen wes5a'),
+        child: Text(data['text']),
         padding: EdgeInsets.symmetric(
           vertical: 5,
           horizontal: 10,
@@ -92,7 +92,7 @@ class MyMessageItem extends StatelessWidget {
     return Align(
       alignment: AlignmentDirectional.centerEnd,
       child: Container(
-        child: Text('Hello y ebn wes5a'),
+        child: Text(data['text']),
         padding: EdgeInsets.symmetric(
           vertical: 5,
           horizontal: 10,
