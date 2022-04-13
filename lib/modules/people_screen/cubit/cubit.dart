@@ -80,4 +80,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
       emit(GetChatsListState());
     });
   }
+  final scrollController = ScrollController();
+
 }

@@ -9,6 +9,9 @@ import '../shared/components/components.dart';
 import '../shared/styles/color.dart';
 
 class ChatsList extends StatelessWidget {
+  final String? receiverId;
+
+  const ChatsList({Key? key, this.receiverId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     FirebaseService service = FirebaseService();
@@ -16,7 +19,7 @@ class ChatsList extends StatelessWidget {
     return Column(
       children: [
         StreamBuilder<QuerySnapshot>(
-          stream: service.users.doc(cubit.userModel!.uid).collection('chats').doc(cubit.userModel!.uid).collection('messages')
+          stream: service.users.doc(service.user!.uid).collection('chats').doc(receiverId).collection('messages')
         .orderBy('dateTime').snapshots(),
           builder:
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -32,11 +35,12 @@ class ChatsList extends StatelessWidget {
             }
             return Expanded(
               child: ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
+                reverse: true,
+                controller: cubit.scrollController,
                 itemCount: snapshot.data!.size,
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
-                  if(cubit.userModel!.uid == data['senderID'])
+                  if(service.user!.uid == data['senderID'])
                     return MyMessageItem(data: data);
                   return MessageItem(data: data);
                 },
@@ -59,20 +63,23 @@ class MessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Align(
-      alignment: AlignmentDirectional.centerStart,
+      alignment: Alignment.centerRight,
       child: Container(
-        child: Text(data['text']),
-        padding: EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 10,
-        ),
+        padding: EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadiusDirectional.only(
-            bottomEnd: Radius.circular(10.0),
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(10.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+            bottomLeft: Radius.circular(32),
           ),
-          color: Colors.grey[300],
+          color: Color(0xff006D84),
+        ),
+        child: Text(
+          data['text'],
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
     );
@@ -90,20 +97,23 @@ class MyMessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: AlignmentDirectional.centerEnd,
+      alignment: Alignment.centerLeft,
       child: Container(
-        child: Text(data['text']),
-        padding: EdgeInsets.symmetric(
-          vertical: 5,
-          horizontal: 10,
-        ),
+        padding: EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          borderRadius: BorderRadiusDirectional.only(
-            bottomStart: Radius.circular(10.0),
-            topStart: Radius.circular(10.0),
-            topEnd: Radius.circular(10.0),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(32),
+            topRight: Radius.circular(32),
+            bottomRight: Radius.circular(32),
           ),
-          color: defaultColor.withOpacity(.2),
+          color: defaultColor,
+        ),
+        child: Text(
+          data['text'],
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
     );
