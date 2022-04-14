@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/states.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,8 +117,8 @@ class PeopleCubit extends Cubit<PeopleStates> {
   }
    Future<void>uploadChatImage() async {
     File _file = File(chatImage!.path);
-    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-        .ref('UsersChats/${fileName}/chatImage.jpg');
+    firebase_storage.Reference ref = FirebaseStorage.instance.ref()
+        .child('images').child('$fileName.jpg');
     await ref.putFile(_file);
     String downloadURL = await ref.getDownloadURL();
     if (downloadURL != null) {
@@ -131,8 +132,8 @@ class PeopleCubit extends Cubit<PeopleStates> {
     required String message,
   }) {
     pickChatImage().then((value) {
-      uploadChatImage();
-      }).then((value) {
+      uploadChatImage()
+      .then((value) {
         MessageModel model = MessageModel(
           dateTime: dateTime,
           message: chatImageUrl,
