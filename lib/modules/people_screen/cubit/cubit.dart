@@ -123,6 +123,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
     String downloadURL = await ref.getDownloadURL();
     if (downloadURL != null) {
       chatImageUrl = downloadURL;
+      uploadChatImage();
       emit(UploadChatImageSuccessState());
     }
   }
