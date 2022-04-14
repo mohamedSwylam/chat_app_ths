@@ -14,8 +14,6 @@ class ChatRoomScreen extends StatelessWidget {
 
   ChatRoomScreen({required this.userModel, Key? key}) : super(key: key);
 
-  var messageController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PeopleCubit, PeopleStates>(
@@ -52,13 +50,120 @@ class ChatRoomScreen extends StatelessWidget {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.all(10.0),
             child: Column(
               children: [
                 Expanded(
                   child: ChatsList(receiverId: userModel['uid']),
                 ),
                 Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 20 / 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 4),
+                        blurRadius: 32,
+                        color: Color(0xFF087949).withOpacity(0.08),
+                      ),
+                    ],
+                  ),
+                  child: SafeArea(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: defaultColor.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(40),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.sentiment_satisfied_alt_outlined,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color!
+                                      .withOpacity(0.64),
+                                ),
+                                SizedBox(width: 20 / 4),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: cubit.messageController,
+                                    onChanged: (value) {
+                                      cubit.changeSendIcon();
+                                    },
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: 'Type message ...',
+                                    ),
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.attach_file,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .color!
+                                      .withOpacity(0.64),
+                                ),
+                                SizedBox(width: 20 / 4),
+                                IconButton(
+                                  onPressed: () {
+                                    cubit.sendImageMessage(
+                                      receiverId: userModel['uid'],
+                                      dateTime: DateTime.now().toString(),
+                                      message: '',
+                                    );
+                                    cubit.scrollController.animateTo(
+                                        cubit.scrollController.position
+                                            .maxScrollExtent,
+                                        duration: Duration(milliseconds: 50),
+                                        curve: Curves.easeIn);
+                                  },
+                                  icon: Icon(
+                                    Icons.camera_alt_outlined,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .color!
+                                        .withOpacity(0.64),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.mic, color: defaultColor),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            cubit.sendMessage(
+                              receiverId: userModel['uid'],
+                              dateTime: DateTime.now().toString(),
+                              text: cubit.messageController.text,
+                            );
+                            cubit.messageController.clear();
+                            cubit.scrollController.animateTo(
+                                cubit.scrollController.position.maxScrollExtent,
+                                duration: Duration(milliseconds: 50),
+                                curve: Curves.easeIn);
+                          },
+                          icon: Icon(Icons.send, color: defaultColor),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                /*Container(
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Colors.grey.shade300,
@@ -93,7 +198,8 @@ class ChatRoomScreen extends StatelessWidget {
                               text: messageController.text,
                             );
                             messageController.clear();
-                            cubit.scrollController.animateTo(cubit.scrollController.position.maxScrollExtent,
+                            cubit.scrollController.animateTo(
+                                cubit.scrollController.position.maxScrollExtent,
                                 duration: Duration(milliseconds: 50),
                                 curve: Curves.easeIn);
                           },
@@ -106,7 +212,7 @@ class ChatRoomScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                ),*/
               ],
             ),
           ),

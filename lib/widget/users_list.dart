@@ -74,10 +74,20 @@ class ChatUserWidget extends StatelessWidget {
             SizedBox(
               width: 20,
             ),
-            Text(
-              '${data['firstName']}',
-              style: TextStyle(
-                  height: 1.4, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Text(
+                  '${data['firstName']}',
+                  style: TextStyle(
+                      height: 1.4, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(width: 5,),
+                Text(
+                  '${data['lastName']}',
+                  style: TextStyle(
+                      height: 1.4, fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ],
         ),

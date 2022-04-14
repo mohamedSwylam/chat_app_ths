@@ -4,6 +4,15 @@ class PeopleInitialState extends PeopleStates {}
 class SocialGetAllUserSuccessState extends PeopleStates {}
 class GetUsersListState extends PeopleStates {}
 class GetChatsListState extends PeopleStates {}
+class ChangeSendIconState extends PeopleStates {}
+class PickChatImageSuccessState extends PeopleStates {}
+class UploadChatImageSuccessState extends PeopleStates {}
+
+class PickChatImageErrorState extends PeopleStates {
+  final String error;
+
+  PickChatImageErrorState(this.error);
+}
 class SocialGetAllUserErrorState extends PeopleStates {
   final String error;
   SocialGetAllUserErrorState(this.error);

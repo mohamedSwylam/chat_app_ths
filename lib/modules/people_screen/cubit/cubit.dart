@@ -21,7 +21,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
-
+import 'package:uuid/uuid.dart';
 class PeopleCubit extends Cubit<PeopleStates> {
   PeopleCubit() : super(PeopleInitialState());
 
@@ -29,13 +29,15 @@ class PeopleCubit extends Cubit<PeopleStates> {
   FirebaseService service = FirebaseService();
   QuerySnapshot? snapshot;
   UserModel? userModel;
-  getuserList(){
+
+  getuserList() {
     return service.users.
-    get().then ((QuerySnapshot querySnapshot) {
-      snapshot=querySnapshot;
+    get().then((QuerySnapshot querySnapshot) {
+      snapshot = querySnapshot;
       emit(GetUsersListState());
     });
   }
+
   void sendMessage({
     required String receiverId,
     required String dateTime,
@@ -43,7 +45,8 @@ class PeopleCubit extends Cubit<PeopleStates> {
   }) {
     MessageModel model = MessageModel(
       dateTime: dateTime,
-      text: text,
+      message: text,
+      type: 'text',
       receiverId: receiverId,
       senderID: service.user!.uid,
     );
@@ -73,13 +76,110 @@ class PeopleCubit extends Cubit<PeopleStates> {
     });
   }
 
-  getChatsList(){
+  getChatsList() {
     return service.users.
-    get().then ((QuerySnapshot querySnapshot) {
-      snapshot=querySnapshot;
+    get().then((QuerySnapshot querySnapshot) {
+      snapshot = querySnapshot;
       emit(GetChatsListState());
     });
   }
-  final scrollController = ScrollController();
 
+  final scrollController = ScrollController();
+  var messageController = TextEditingController();
+
+  IconData changeSendIcon() {
+    if (messageController.text.isEmpty) {
+      return Icons.mic;
+    } else {
+      return Icons.send;
+    }
+  }
+
+  //chat image
+  final ImagePicker picker = ImagePicker();
+  String fileName = Uuid().v1();
+  XFile? chatImage;
+  String? chatImageUrl;
+
+  Future<XFile?> pickImage() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    return image;
+  }
+
+  Future <void> pickChatImage() async {
+    pickImage().then((value) {
+      chatImage = value;
+      emit(PickChatImageSuccessState());
+    }).catchError((error) {
+      emit(PickChatImageErrorState(error.toString()));
+    });
+  }
+  Future<String> uploadChatImage(XFile? file, String? reference) async {
+    File _file = File(file!.path);
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref(reference);
+    await ref.putFile(chatImage);
+    String downloadURL = await ref.getDownloadURL();
+    emit(UploadChatImageSuccessState());
+    return downloadURL;
+  }
+  Future <void> uploadChatImage() async {
+    pickChatImage().then((value) {
+      service
+          .uploadChatImage(chatImage, 'UsersChats/${fileName}/chatImage.jpg')
+          .then((String? url) {
+        if (url != null) {
+          chatImageUrl = url;
+          emit(UploadChatImageSuccessState());
+        }
+  }
+
+  void sendImageMessage({
+    required String receiverId,
+    required String dateTime,
+    required String message,
+  }) {
+    pickChatImage().then((value) {
+      service
+          .uploadChatImage(chatImage, 'UsersChats/${fileName}/chatImage.jpg')
+          .then((String? url) {
+        if (url != null) {
+          chatImageUrl = url;
+          emit(UploadChatImageSuccessState());
+        }
+      }).then((value) {
+        MessageModel model = MessageModel(
+          dateTime: dateTime,
+          message: chatImageUrl,
+          type: 'img',
+          receiverId: receiverId,
+          senderID: service.user!.uid,
+        );
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(service.user!.uid)
+            .collection('chats')
+            .doc(receiverId)
+            .collection('messages')
+            .add(model.toJson())
+            .then((value) {
+          emit(SocialSendMessageSuccessState());
+        }).catchError((error) {
+          emit(SocialSendMessageErrorState(error.toString()));
+        });
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(receiverId)
+            .collection('chats')
+            .doc(service.user!.uid)
+            .collection('messages')
+            .add(model.toJson())
+            .then((value) {
+          emit(SocialSendMessageSuccessState());
+        }).catchError((error) {
+          emit(SocialSendMessageErrorState(error.toString()));
+        });
+      });
+    });
+  }
 }

@@ -21,6 +21,7 @@ class FirebaseService {
     return downloadURL;
   }
 
+
   Future<void> addUser({Map<String, dynamic>? data}) {
     return users
         .doc(user!.uid)
