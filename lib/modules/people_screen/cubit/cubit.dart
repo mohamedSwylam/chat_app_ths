@@ -114,39 +114,24 @@ class PeopleCubit extends Cubit<PeopleStates> {
       emit(PickChatImageErrorState(error.toString()));
     });
   }
-  Future<String> uploadChatImage(XFile? file, String? reference) async {
-    File _file = File(file!.path);
+   Future<void>uploadChatImage() async {
+    File _file = File(chatImage!.path);
     firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
-        .ref(reference);
-    await ref.putFile(chatImage);
+        .ref('UsersChats/${fileName}/chatImage.jpg');
+    await ref.putFile(_file);
     String downloadURL = await ref.getDownloadURL();
-    emit(UploadChatImageSuccessState());
-    return downloadURL;
+    if (downloadURL != null) {
+      chatImageUrl = downloadURL;
+      emit(UploadChatImageSuccessState());
+    }
   }
-  Future <void> uploadChatImage() async {
-    pickChatImage().then((value) {
-      service
-          .uploadChatImage(chatImage, 'UsersChats/${fileName}/chatImage.jpg')
-          .then((String? url) {
-        if (url != null) {
-          chatImageUrl = url;
-          emit(UploadChatImageSuccessState());
-        }
-  }
-
   void sendImageMessage({
     required String receiverId,
     required String dateTime,
     required String message,
   }) {
     pickChatImage().then((value) {
-      service
-          .uploadChatImage(chatImage, 'UsersChats/${fileName}/chatImage.jpg')
-          .then((String? url) {
-        if (url != null) {
-          chatImageUrl = url;
-          emit(UploadChatImageSuccessState());
-        }
+      uploadChatImage();
       }).then((value) {
         MessageModel model = MessageModel(
           dateTime: dateTime,
