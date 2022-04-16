@@ -173,4 +173,11 @@ class PeopleCubit extends Cubit<PeopleStates> {
           emit(SocialSendMessageErrorState(error.toString()));
         });
   }
+  bool writeTextPresent = false;
+  changeBetweenSendAndVoiceIcon(writeText) {
+    bool _isEmpty = false;
+    writeText.isEmpty ? _isEmpty = true : _isEmpty = false;
+    this.writeTextPresent = !_isEmpty;
+    emit(ChangeBetweenSendAndVoiceIcon());
+  }
 }
