@@ -1,5 +1,7 @@
 import 'dart:io';
-
+import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/states.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -9,6 +11,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
 import '../../../layout/cubit/cubit.dart';
 import '../../../models/message_model.dart';
 import '../../../models/user_model.dart';
@@ -23,6 +28,8 @@ import 'package:mime_type/mime_type.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
+
+import '../../../shared/components/components.dart';
 class PeopleCubit extends Cubit<PeopleStates> {
   PeopleCubit() : super(PeopleInitialState());
 
@@ -174,10 +181,169 @@ class PeopleCubit extends Cubit<PeopleStates> {
         });
   }
   bool writeTextPresent = false;
+  bool isLoading = false;
+
   changeBetweenSendAndVoiceIcon(writeText) {
     bool _isEmpty = false;
     writeText.isEmpty ? _isEmpty = true : _isEmpty = false;
     this.writeTextPresent = !_isEmpty;
     emit(ChangeBetweenSendAndVoiceIcon());
+  }
+  //audio recorder
+  /// Audio Player and Dio Downloader Initialized
+  final AudioPlayer _justAudioPlayer = AudioPlayer();
+
+  final Record _record = Record();
+
+  /// Some Integer Value Initialized
+  late double _currAudioPlayingTime;
+  int _lastAudioPlayingIndex = 0;
+
+  double _audioPlayingSpeed = 1.0;
+
+  /// Audio Playing Time Related
+  String _totalDuration = '0:00';
+  String _loadingTime = '0:00';
+
+  double _chatBoxHeight = 0.0;
+
+  String _hintText = "Type Here...";
+
+  late Directory _audioDirectory;
+
+  /// For Audio Player
+  IconData _iconData = Icons.play_arrow_rounded;
+
+  final ScrollController _scrollController = ScrollController(
+    initialScrollOffset: 0.0,
+  );
+
+  _makeDirectoryForRecordings() async {
+    final Directory? directory = await getExternalStorageDirectory();
+
+    _audioDirectory = await Directory(directory!.path + '/Recordings/')
+        .create(); // This directory will create Once in whole Application
+  }
+  takePermissionForStorage() async {
+    var status = await Permission.storage.request();
+    if (status == PermissionStatus.granted) {
+      {
+        // showToast("Thanks For Storage Permission", _fToast,
+        //     toastColor: Colors.green, fontSize: 16.0);
+
+        _makeDirectoryForRecordings();
+      }
+    } else {
+      showSnackBar("Some Problem May Be Arrive", context);
+    }
+  }
+  double _amountToScroll(ChatMessageTypes chatMessageTypes,
+      {String? actualMessageKey}) {
+    switch (chatMessageTypes) {
+      case ChatMessageTypes.None:
+        return 10.0 + 30.0;
+      case ChatMessageTypes.Text:
+        return 10.0 + 30.0;
+      case ChatMessageTypes.Image:
+        return MediaQuery.of(context).size.height * 0.6;
+      case ChatMessageTypes.Video:
+        return MediaQuery.of(context).size.height * 0.6;
+      case ChatMessageTypes.Document:
+        return actualMessageKey!.contains('.pdf')
+            ? MediaQuery.of(context).size.height * 0.6
+            : 70.0 + 30.0;
+
+      case ChatMessageTypes.Audio:
+        return 70.0 + 30.0;
+      case ChatMessageTypes.Location:
+        return MediaQuery.of(context).size.height * 0.6;
+    }
+  }
+  void _voiceAndAudioSend(String recordedFilePath,
+      {String audioExtension = '.mp3'}) async {
+    await SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+    if (_justAudioPlayer.duration != null) {
+        setState(() {
+          _justAudioPlayer.stop();
+          _iconData = Icons.play_arrow_rounded;
+        });
+    }
+
+    await _justAudioPlayer.setFilePath(recordedFilePath);
+
+    if (_justAudioPlayer.duration!.inMinutes > 20)
+    showSnackBar("Audio File Duration Can't be greater than 20 minutes", context);
+
+    else {
+        setState(() {
+          this._isLoading = true;
+        });
+      final String _messageTime =
+          "${DateTime.now().hour}:${DateTime.now().minute}";
+
+      final String? downloadedVoicePath = await _cloudStoreDataManagement
+          .uploadMediaToStorage(File(recordedFilePath),
+          reference: 'chatVoices/');
+
+      if (downloadedVoicePath != null) {
+        await _cloudStoreDataManagement.sendMessageToConnection(
+            chatMessageTypes: ChatMessageTypes.Audio,
+            connectionUserName: widget.userName,
+            sendMessageData: {
+              ChatMessageTypes.Audio.toString(): {
+                downloadedVoicePath.toString(): _messageTime
+              }
+            });
+
+          setState(() {
+            this._allConversationMessages.add({
+              recordedFilePath: _messageTime,
+            });
+            this._chatMessageCategoryHolder.add(ChatMessageTypes.Audio);
+            this._conversationMessageHolder.add(false);
+          });
+
+          setState(() {
+            _scrollController.jumpTo(
+              _scrollController.position.maxScrollExtent +
+                  _amountToScroll(ChatMessageTypes.Audio)+30.0,
+            );
+          });
+
+        await _localDatabase.insertMessageInUserTable(
+            userName: widget.userName,
+            actualMessage: recordedFilePath.toString(),
+            chatMessageTypes: ChatMessageTypes.Audio,
+            messageHolderType: MessageHolderType.Me,
+            messageDateLocal: DateTime.now().toString().split(" ")[0],
+            messageTimeLocal: _messageTime);
+      }
+       setState(() {
+          this._isLoading = false;
+        });
+    }
+  }
+  void voiceTake() async {
+    if (!await Permission.microphone.status.isGranted) {
+      final microphoneStatus = await Permission.microphone.request();
+      if (microphoneStatus != PermissionStatus.granted)
+        showSnackBar("Microphone Permission Required To Record Voice", context);
+    } else {
+      if (await this._record.isRecording()) {
+            _hintText = 'Type Here...';
+            emit(ChangeHintTextToTypeHere());
+            final String? recordedFilePath = await this._record.stop();
+        _voiceAndAudioSend(recordedFilePath.toString());
+      } else {
+            _hintText = 'Recording....';
+            emit(ChangeHintTextToRecording());
+            await this._record
+            .start(
+          path: '${_audioDirectory.path}${DateTime.now()}.aac',
+        )
+            .then((value) => print("Recording"));
+      }
+    }
   }
 }

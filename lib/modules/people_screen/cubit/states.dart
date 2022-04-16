@@ -9,6 +9,8 @@ class PickChatImageSuccessState extends PeopleStates {}
 class UploadChatImageSuccessState extends PeopleStates {}
 class UploadChatImageErrorState extends PeopleStates {}
 class ChangeBetweenSendAndVoiceIcon extends PeopleStates {}
+class ChangeHintTextToTypeHere extends PeopleStates {}
+class ChangeHintTextToRecording extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;

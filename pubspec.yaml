@@ -77,6 +77,10 @@ dependencies:
   path: ^1.8.0
   flutter_slidable: ^1.2.0
   conditional_builder_null_safety: ^0.0.6
+  just_audio: ^0.9.7
+  percent_indicator: ^3.0.1
+  record: ^3.0.0
+  permission_handler: ^9.2.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
