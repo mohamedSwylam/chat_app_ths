@@ -71,7 +71,7 @@ class MessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Align(
-      alignment: Alignment.centerRight,
+      alignment: Alignment.centerLeft,
       child: (data['type'] == 'text')
           ? Container(
               padding:
@@ -81,7 +81,7 @@ class MessageItem extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(32),
                   topRight: Radius.circular(32),
-                  bottomLeft: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
                 ),
                 color: Color(0xff006D84),
               ),
@@ -93,7 +93,7 @@ class MessageItem extends StatelessWidget {
               ))
           : Container(
               height: size.height / 2.5,
-              width: size.width,
+              width: size.width/2,
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: InkWell(
                 onTap: () => Navigator.of(context).push(
@@ -110,7 +110,7 @@ class MessageItem extends StatelessWidget {
                   child: data['message'] != ""
                       ? Image.network(
                           data['message'],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         )
                       : CircularProgressIndicator(),
                 ),
@@ -132,7 +132,7 @@ class MyMessageItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.centerRight,
       child: (data['type'] == 'text')
           ? Container(
               padding:
@@ -142,7 +142,7 @@ class MyMessageItem extends StatelessWidget {
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(32),
                   topRight: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
+                  bottomLeft: Radius.circular(32),
                 ),
                 color: defaultColor,
               ),

@@ -98,7 +98,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
 
   //chat image
   final ImagePicker picker = ImagePicker();
-  String fileName = Uuid().v1();
   XFile? chatImage;
   String? chatImageUrl;
 
@@ -107,23 +106,33 @@ class PeopleCubit extends Cubit<PeopleStates> {
     return image;
   }
 
-  Future <void> pickChatImage() async {
+  pickChatImage({
+    required String receiverId,
+    required String dateTime,
+    required String message,
+  }) async {
     pickImage().then((value) {
       chatImage = value;
+      uploadChatImage(message: message,dateTime: dateTime,receiverId: receiverId);
       emit(PickChatImageSuccessState());
     }).catchError((error) {
       emit(PickChatImageErrorState(error.toString()));
     });
   }
-   Future<void>uploadChatImage() async {
+   Future<void>uploadChatImage({
+     required String receiverId,
+     required String dateTime,
+     required String message,
+   }) async {
     File _file = File(chatImage!.path);
+    String fileName = Uuid().v1();
     firebase_storage.Reference ref = FirebaseStorage.instance.ref()
         .child('images').child('$fileName.jpg');
     await ref.putFile(_file);
     String downloadURL = await ref.getDownloadURL();
     if (downloadURL != null) {
       chatImageUrl = downloadURL;
-      uploadChatImage();
+      sendImageMessage(receiverId: receiverId,dateTime: dateTime,message: message);
       emit(UploadChatImageSuccessState());
     }
   }
@@ -132,9 +141,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
     required String dateTime,
     required String message,
   }) {
-    pickChatImage().then((value) {
-      uploadChatImage()
-      .then((value) {
         MessageModel model = MessageModel(
           dateTime: dateTime,
           message: chatImageUrl,
@@ -166,7 +172,5 @@ class PeopleCubit extends Cubit<PeopleStates> {
         }).catchError((error) {
           emit(SocialSendMessageErrorState(error.toString()));
         });
-      });
-    });
   }
 }

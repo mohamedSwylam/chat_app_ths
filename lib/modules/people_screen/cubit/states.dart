@@ -7,6 +7,7 @@ class GetChatsListState extends PeopleStates {}
 class ChangeSendIconState extends PeopleStates {}
 class PickChatImageSuccessState extends PeopleStates {}
 class UploadChatImageSuccessState extends PeopleStates {}
+class UploadChatImageErrorState extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;

@@ -116,7 +116,7 @@ class ChatRoomScreen extends StatelessWidget {
                                 SizedBox(width: 20 / 4),
                                 IconButton(
                                   onPressed: () {
-                                    cubit.sendImageMessage(
+                                    cubit.pickChatImage(
                                       receiverId: userModel['uid'],
                                       dateTime: DateTime.now().toString(),
                                       message: '',
