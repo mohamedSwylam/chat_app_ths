@@ -61,7 +61,9 @@ class ChatRoomScreen extends StatelessWidget {
                     vertical: 20 / 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).scaffoldBackgroundColor,
+                    color: Theme
+                        .of(context)
+                        .scaffoldBackgroundColor,
                     boxShadow: [
                       BoxShadow(
                         offset: Offset(0, 4),
@@ -86,7 +88,8 @@ class ChatRoomScreen extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.sentiment_satisfied_alt_outlined,
-                                  color: Theme.of(context)
+                                  color: Theme
+                                      .of(context)
                                       .textTheme
                                       .bodyText1!
                                       .color!
@@ -97,7 +100,8 @@ class ChatRoomScreen extends StatelessWidget {
                                   child: TextFormField(
                                     controller: cubit.messageController,
                                     onChanged: (value) {
-                                      cubit.changeSendIcon();
+                                      cubit.changeBetweenSendAndVoiceIcon(
+                                          value);
                                     },
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
@@ -107,7 +111,8 @@ class ChatRoomScreen extends StatelessWidget {
                                 ),
                                 Icon(
                                   Icons.attach_file,
-                                  color: Theme.of(context)
+                                  color: Theme
+                                      .of(context)
                                       .textTheme
                                       .bodyText1!
                                       .color!
@@ -129,7 +134,8 @@ class ChatRoomScreen extends StatelessWidget {
                                   },
                                   icon: Icon(
                                     Icons.camera_alt_outlined,
-                                    color: Theme.of(context)
+                                    color: Theme
+                                        .of(context)
                                         .textTheme
                                         .bodyText1!
                                         .color!
@@ -140,10 +146,7 @@ class ChatRoomScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.mic, color: defaultColor),
-                        ),
+                        cubit.writeTextPresent ?
                         IconButton(
                           onPressed: () {
                             cubit.sendMessage(
@@ -158,6 +161,9 @@ class ChatRoomScreen extends StatelessWidget {
                                 curve: Curves.easeIn);
                           },
                           icon: Icon(Icons.send, color: defaultColor),
+                        ): IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.mic, color: defaultColor),
                         ),
                       ],
                     ),
