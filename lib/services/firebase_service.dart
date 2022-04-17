@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -39,5 +40,32 @@ class FirebaseService {
     firebase_storage.UploadTask uploadTask = storageReference.putFile(image!);
     await uploadTask;
     return storageReference.getDownloadURL();
+  }
+  Future<String?> uploadMediaToStorage(File filePath,
+      {required String reference}) async {
+    try {
+      String? downLoadUrl;
+
+      final String fileName =
+          '${FirebaseAuth.instance.currentUser!.uid}${DateTime.now().day}${DateTime.now().month}${DateTime.now().year}${DateTime.now().hour}${DateTime.now().minute}${DateTime.now().second}${DateTime.now().millisecond}';
+
+      final Reference firebaseStorageRef =
+      FirebaseStorage.instance.ref(reference).child(fileName);
+
+      print('Firebase Storage Reference: $firebaseStorageRef');
+
+      final UploadTask uploadTask = firebaseStorageRef.putFile(filePath);
+
+      await uploadTask.whenComplete(() async {
+        print("Media Uploaded");
+        downLoadUrl = await firebaseStorageRef.getDownloadURL();
+        print("Download Url: $downLoadUrl}");
+      });
+
+      return downLoadUrl!;
+    } catch (e) {
+      print("Error: Firebase Storage Exception is: ${e.toString()}");
+      return null;
+    }
   }
 }

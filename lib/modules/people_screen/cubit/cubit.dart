@@ -180,6 +180,43 @@ class PeopleCubit extends Cubit<PeopleStates> {
           emit(SocialSendMessageErrorState(error.toString()));
         });
   }
+  void sendVoiceMessage({
+    required String receiverId,
+    required String dateTime,
+    required String message,
+  }) {
+    MessageModel model = MessageModel(
+      dateTime: dateTime,
+      message: chatImageUrl,
+      type: 'voice',
+      receiverId: receiverId,
+      senderID: service.user!.uid,
+    );
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(service.user!.uid)
+        .collection('chats')
+        .doc(receiverId)
+        .collection('messages')
+        .add(model.toJson())
+        .then((value) {
+      emit(SocialSendMessageSuccessState());
+    }).catchError((error) {
+      emit(SocialSendMessageErrorState(error.toString()));
+    });
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(receiverId)
+        .collection('chats')
+        .doc(service.user!.uid)
+        .collection('messages')
+        .add(model.toJson())
+        .then((value) {
+      emit(SocialSendMessageSuccessState());
+    }).catchError((error) {
+      emit(SocialSendMessageErrorState(error.toString()));
+    });
+  }
   bool writeTextPresent = false;
   bool isLoading = false;
 
@@ -237,28 +274,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
       showSnackBar("Some Problem May Be Arrive", context);
     }
   }
-  double _amountToScroll(ChatMessageTypes chatMessageTypes,
-      {String? actualMessageKey}) {
-    switch (chatMessageTypes) {
-      case ChatMessageTypes.None:
-        return 10.0 + 30.0;
-      case ChatMessageTypes.Text:
-        return 10.0 + 30.0;
-      case ChatMessageTypes.Image:
-        return MediaQuery.of(context).size.height * 0.6;
-      case ChatMessageTypes.Video:
-        return MediaQuery.of(context).size.height * 0.6;
-      case ChatMessageTypes.Document:
-        return actualMessageKey!.contains('.pdf')
-            ? MediaQuery.of(context).size.height * 0.6
-            : 70.0 + 30.0;
 
-      case ChatMessageTypes.Audio:
-        return 70.0 + 30.0;
-      case ChatMessageTypes.Location:
-        return MediaQuery.of(context).size.height * 0.6;
-    }
-  }
   void _voiceAndAudioSend(String recordedFilePath,
       {String audioExtension = '.mp3'}) async {
     await SystemChannels.textInput.invokeMethod('TextInput.hide');
@@ -282,7 +298,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
       final String _messageTime =
           "${DateTime.now().hour}:${DateTime.now().minute}";
 
-      final String? downloadedVoicePath = await _cloudStoreDataManagement
+      final String? downloadedVoicePath = await service
           .uploadMediaToStorage(File(recordedFilePath),
           reference: 'chatVoices/');
 
