@@ -111,7 +111,9 @@ class ChatRoomScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                 cubit.showDifferentChatOptions(context);
+                                 cubit.showDifferentChatOptions(context, receiverId: userModel['uid'],
+                                   dateTime: DateTime.now().toString(),
+                                   message: '',);
                                   },
                                   icon: Icon(
                                     Icons.attach_file,

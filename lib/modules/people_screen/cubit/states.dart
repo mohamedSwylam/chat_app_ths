@@ -15,7 +15,6 @@ class JustAudioPlayerState extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;
-
   PickChatImageErrorState(this.error);
 }
 class SocialGetAllUserErrorState extends PeopleStates {
