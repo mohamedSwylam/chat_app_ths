@@ -366,4 +366,225 @@ class PeopleCubit extends Cubit<PeopleStates> {
       }
     }
   }
+  void _differentChatOptions(context) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          elevation: 0.3,
+          backgroundColor: Color.fromRGBO(34, 48, 60, 0.5),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height / 2.7,
+            child: Center(
+              child: CircleList(
+                initialAngle: 55,
+                outerRadius: MediaQuery.of(context).size.width / 3.2,
+                innerRadius: MediaQuery.of(context).size.width / 10,
+                showInitialAnimation: true,
+                innerCircleColor: Color.fromRGBO(34, 48, 60, 1),
+                outerCircleColor: Color.fromRGBO(0, 0, 0, 0.1),
+                origin: Offset(0, 0),
+                rotateMode: RotateMode.allRotate,
+                centerWidget: Center(
+                  child: Text(
+                    "G",
+                    style: TextStyle(
+                      color: Colors.lightBlue,
+                      fontSize: 45.0,
+                    ),
+                  ),
+                ),
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        )),
+                    child: GestureDetector(
+                      onTap: () async {
+
+                      },
+                      onLongPress: () async {
+
+                      },
+                      child: Icon(
+                        Icons.camera_alt_rounded,
+                        color: Colors.lightGreen,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        )),
+                    child: GestureDetector(
+                      onTap: () async {
+                  /*      if (mounted) {
+                          setState(() {
+                            this._isLoading = true;
+                          });
+                        }
+
+                        final pickedVideo = await ImagePicker().pickVideo(
+                            source: ImageSource.camera,
+                            maxDuration: Duration(seconds: 15));
+
+                        if (pickedVideo != null) {
+                          final String thumbnailPathTake =
+                          await _nativeCallback.getTheVideoThumbnail(
+                              videoPath: pickedVideo.path);
+
+                          _addSelectedMediaToChat(pickedVideo.path,
+                              chatMessageTypeTake: ChatMessageTypes.Video,
+                              thumbnailPath: thumbnailPathTake);
+                        }
+
+                        if (mounted) {
+                          setState(() {
+                            this._isLoading = false;
+                          });
+                        }*/
+                      },
+                      onLongPress: () async {
+                 /*       if (mounted) {
+                          setState(() {
+                            this._isLoading = true;
+                          });
+                        }
+
+                        final pickedVideo = await ImagePicker().pickVideo(
+                            source: ImageSource.gallery,
+                            maxDuration: Duration(seconds: 15));
+
+                        if (pickedVideo != null) {
+                          final String thumbnailPathTake =
+                          await _nativeCallback.getTheVideoThumbnail(
+                              videoPath: pickedVideo.path);
+
+                          _addSelectedMediaToChat(pickedVideo.path,
+                              chatMessageTypeTake: ChatMessageTypes.Video,
+                              thumbnailPath: thumbnailPathTake);
+                        }
+
+                        if (mounted) {
+                          setState(() {
+                            this._isLoading = false;
+                          });
+                        }*/
+                      },
+                      child: Icon(
+                        Icons.video_collection,
+                        color: Colors.lightGreen,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        )),
+                    child: GestureDetector(
+                      onTap: () async {
+                     //   await _pickFileFromStorage();
+                      },
+                      child: Icon(
+                        Icons.document_scanner_outlined,
+                        color: Colors.lightGreen,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        )),
+                    child: GestureDetector(
+                      onTap: () async {
+        /*                final PermissionStatus locationPermissionStatus =
+                        await Permission.location.request();
+                        if (locationPermissionStatus ==
+                            PermissionStatus.granted) {
+                          await _takeLocationInput();
+                        } else {
+                          showToast(
+                              "Location Permission Required", this._fToast);
+                        }*/
+                      },
+                      child: Icon(
+                        Icons.location_on_rounded,
+                        color: Colors.lightGreen,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          color: Colors.blue,
+                          width: 3,
+                        )),
+                    child: GestureDetector(
+                      child: Icon(
+                        Icons.music_note_rounded,
+                        color: Colors.lightGreen,
+                      ),
+                      onTap: () async {
+/*                        final List<String> _allowedExtensions = const [
+                          'mp3',
+                          'm4a',
+                          'wav',
+                          'ogg',
+                        ];
+
+                        final FilePickerResult? _audioFilePickerResult =
+                        await FilePicker.platform.pickFiles(
+                          type: FileType.audio,
+                        );
+
+                        Navigator.pop(context);
+
+                        if (_audioFilePickerResult != null) {
+                          _audioFilePickerResult.files.forEach((element) {
+                            print('Name: ${element.path}');
+                            print('Extension: ${element.extension}');
+                            if (_allowedExtensions
+                                .contains(element.extension)) {
+                              _voiceAndAudioSend(element.path.toString(),
+                                  audioExtension: '.${element.extension}');
+                            } else {
+                              _voiceAndAudioSend(element.path.toString());
+                            }
+                          });
+                        }*/
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ));
+  }
 }
