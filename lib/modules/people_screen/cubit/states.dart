@@ -11,6 +11,7 @@ class UploadChatImageErrorState extends PeopleStates {}
 class ChangeBetweenSendAndVoiceIcon extends PeopleStates {}
 class ChangeHintTextToTypeHere extends PeopleStates {}
 class ChangeHintTextToRecording extends PeopleStates {}
+class JustAudioPlayerState extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;

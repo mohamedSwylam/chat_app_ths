@@ -187,7 +187,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
   }) {
     MessageModel model = MessageModel(
       dateTime: dateTime,
-      message: chatImageUrl,
+      message: chatVoiceUrl,
       type: 'voice',
       receiverId: receiverId,
       senderID: service.user!.uid,
@@ -274,16 +274,19 @@ class PeopleCubit extends Cubit<PeopleStates> {
       showSnackBar("Some Problem May Be Arrive", context);
     }
   }
-
-  void _voiceAndAudioSend(String recordedFilePath,
-      {String audioExtension = '.mp3'}) async {
+  String? chatVoiceUrl;
+  void _voiceAndAudioSend(context,String recordedFilePath,
+      {String audioExtension = '.mp3',
+  required String receiverId,
+  required String dateTime,
+  required String message,
+}) async {
     await SystemChannels.textInput.invokeMethod('TextInput.hide');
 
     if (_justAudioPlayer.duration != null) {
-        setState(() {
           _justAudioPlayer.stop();
           _iconData = Icons.play_arrow_rounded;
-        });
+        emit(JustAudioPlayerState());
     }
 
     await _justAudioPlayer.setFilePath(recordedFilePath);
@@ -292,9 +295,9 @@ class PeopleCubit extends Cubit<PeopleStates> {
     showSnackBar("Audio File Duration Can't be greater than 20 minutes", context);
 
     else {
-        setState(() {
+   /*     setState(() {
           this._isLoading = true;
-        });
+        });*/
       final String _messageTime =
           "${DateTime.now().hour}:${DateTime.now().minute}";
 
@@ -303,16 +306,11 @@ class PeopleCubit extends Cubit<PeopleStates> {
           reference: 'chatVoices/');
 
       if (downloadedVoicePath != null) {
-        await _cloudStoreDataManagement.sendMessageToConnection(
-            chatMessageTypes: ChatMessageTypes.Audio,
-            connectionUserName: widget.userName,
-            sendMessageData: {
-              ChatMessageTypes.Audio.toString(): {
-                downloadedVoicePath.toString(): _messageTime
-              }
-            });
+        chatVoiceUrl=downloadedVoicePath;
+        sendVoiceMessage(receiverId: receiverId, dateTime: dateTime, message: message);}}
 
-          setState(() {
+
+    /*      setState(() {
             this._allConversationMessages.add({
               recordedFilePath: _messageTime,
             });
@@ -337,10 +335,12 @@ class PeopleCubit extends Cubit<PeopleStates> {
       }
        setState(() {
           this._isLoading = false;
-        });
+        });*/
     }
-  }
-  void voiceTake() async {
+
+  void voiceTake(context,{required String receiverId,
+    required String dateTime,
+    required String message,}) async {
     if (!await Permission.microphone.status.isGranted) {
       final microphoneStatus = await Permission.microphone.request();
       if (microphoneStatus != PermissionStatus.granted)
@@ -350,15 +350,19 @@ class PeopleCubit extends Cubit<PeopleStates> {
             _hintText = 'Type Here...';
             emit(ChangeHintTextToTypeHere());
             final String? recordedFilePath = await this._record.stop();
-        _voiceAndAudioSend(recordedFilePath.toString());
+        _voiceAndAudioSend(context,recordedFilePath.toString(),receiverId: receiverId, dateTime: dateTime, message: message);
       } else {
             _hintText = 'Recording....';
             emit(ChangeHintTextToRecording());
             await this._record
             .start(
           path: '${_audioDirectory.path}${DateTime.now()}.aac',
+
         )
-            .then((value) => print("Recording"));
+
+    .then((value) {
+      print("Recording");
+    });
       }
     }
   }

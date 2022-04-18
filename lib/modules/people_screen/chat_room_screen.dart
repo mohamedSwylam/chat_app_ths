@@ -162,7 +162,13 @@ class ChatRoomScreen extends StatelessWidget {
                           },
                           icon: Icon(Icons.send, color: defaultColor),
                         ): IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            cubit.voiceTake(context,
+                              receiverId: userModel['uid'],
+                              dateTime: DateTime.now().toString(),
+                              message: '',
+                            );
+                          },
                           icon: Icon(Icons.mic, color: defaultColor),
                         ),
                       ],
@@ -226,4 +232,5 @@ class ChatRoomScreen extends StatelessWidget {
       },
     );
   }
+
 }
