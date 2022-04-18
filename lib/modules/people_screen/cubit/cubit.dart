@@ -23,7 +23,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:circle_list/circle_list.dart';
 import 'package:mime_type/mime_type.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:path/path.dart';
@@ -366,7 +366,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
       }
     }
   }
-  void _differentChatOptions(context) {
+  void showDifferentChatOptions(context) {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(

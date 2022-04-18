@@ -109,15 +109,21 @@ class ChatRoomScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Icon(
-                                  Icons.attach_file,
-                                  color: Theme
-                                      .of(context)
-                                      .textTheme
-                                      .bodyText1!
-                                      .color!
-                                      .withOpacity(0.64),
+                                IconButton(
+                                  onPressed: () {
+                                 cubit.showDifferentChatOptions(context);
+                                  },
+                                  icon: Icon(
+                                    Icons.attach_file,
+                                    color: Theme
+                                        .of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .color!
+                                        .withOpacity(0.64),
+                                  ),
                                 ),
+
                                 SizedBox(width: 20 / 4),
                                 IconButton(
                                   onPressed: () {
