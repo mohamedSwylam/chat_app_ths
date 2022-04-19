@@ -672,6 +672,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  open_file:
+    dependency: "direct main"
+    description:
+      name: open_file
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.1"
   otp_text_field:
     dependency: "direct main"
     description:
@@ -756,6 +763,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  pdf_viewer_plugin:
+    dependency: "direct main"
+    description:
+      name: pdf_viewer_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   pedantic:
     dependency: transitive
     description:

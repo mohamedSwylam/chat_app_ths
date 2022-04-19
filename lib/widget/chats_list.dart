@@ -1,6 +1,9 @@
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
+import 'package:chat_app_th/shared/styles/icon_broken.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 
 import '../models/user_model.dart';
 import '../modules/people_screen/chat_room_screen.dart';
@@ -70,53 +73,130 @@ class MessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: (data['type'] == 'text')
-          ? Container(
-              padding:
-                  EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32),
-                  topRight: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
+    switch (data['type']) {
+      case 'text':
+        {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+                padding:
+                EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
+                  ),
+                  color: Color(0xff006D84),
                 ),
-                color: Color(0xff006D84),
-              ),
-              child: Text(
-                data['message'],
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ))
-          : Container(
-              height: size.height / 2.5,
-              width: size.width/2,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ShowImage(
-                      imageUrl: data['message'],
-                    ),
+                child: Text(
+                  data['message'],
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )),
+          );
+        }
+        break;
+      case 'img': {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+            height: size.height / 2.5,
+            width: size.width/2,
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ShowImage(
+                    imageUrl: data['message'],
                   ),
                 ),
-                child: Container(
-                  height: size.height / 2.5,
-                  width: size.width / 2,
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: data['message'] != ""
-                      ? Image.network(
-                          data['message'],
-                          fit: BoxFit.fill,
-                        )
-                      : CircularProgressIndicator(),
-                ),
+              ),
+              child: Container(
+                height: size.height / 2.5,
+                width: size.width / 2,
+                decoration: BoxDecoration(border: Border.all()),
+                child: data['message'] != ""
+                    ? Image.network(
+                  data['message'],
+                  fit: BoxFit.fill,
+                )
+                    : CircularProgressIndicator(),
               ),
             ),
-    );
+          ),
+        );
+      }
+      break;
+      case 'document': {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              margin:  EdgeInsets.only(
+                right: MediaQuery.of(context).size.width / 3,
+                left: 5.0,
+                top: 30.0,
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color:  Colors.white,
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Stack(
+                  children: [
+                    Center(
+                        child: Text(
+                          'Loading Error',
+                          style: TextStyle(
+                            fontFamily: 'Lora',
+                            color: Colors.red,
+                            fontSize: 20.0,
+                            letterSpacing: 1.0,
+                          ),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: PdfView(
+                        path:data['message'],
+                      ),
+                    ),
+                    Center(
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.open_in_new_rounded,
+                          size: 40.0,
+                          color: Colors.blue,
+                        ),
+                        onTap: () async {
+                        /*  final OpenResult openResult = await OpenFile.open(
+                              this
+                                  ._allConversationMessages[index]
+                                  .keys
+                                  .first);
+
+                          openFileResultStatus(openResult: openResult);*/
+                        },
+                      ),
+                    ),
+                  ],
+                )
+              )),
+        );
+      }
+      break;
+      default: {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(),
+        );
+      }
+      break;
+    }
   }
 }
 
@@ -131,55 +211,175 @@ class MyMessageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Align(
-      alignment: Alignment.centerRight,
-      child: (data['type'] == 'text')
-          ? Container(
-              padding:
-                  EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
-              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(32),
-                  topRight: Radius.circular(32),
-                  bottomLeft: Radius.circular(32),
+    switch (data['type']) {
+      case 'text':
+        {
+          return Align(
+            alignment: Alignment.centerRight,
+            child: Container(
+                padding:
+                EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
+                    bottomRight: Radius.circular(32),
+                  ),
+                  color: Color(0xff006D84),
                 ),
-                color: defaultColor,
-              ),
-              child: Text(
-                data['message'],
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ))
-          : Container(
-              height: size.height / 2.5,
-              width: size.width/2,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ShowImage(
-                      imageUrl: data['message'],
-                    ),
+                child: Text(
+                  data['message'],
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                )),
+          );
+        }
+        break;
+      case 'img': {
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            height: size.height / 2.5,
+            width: size.width/2,
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: InkWell(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => ShowImage(
+                    imageUrl: data['message'],
                   ),
                 ),
-                child: Container(
-                  height: size.height / 2.5,
-                  width: size.width / 3,
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: data['message'] != ""
-                      ? Image.network(
-                          data['message'],
-                          fit: BoxFit.fill,
-                        )
-                      : CircularProgressIndicator(),
-                ),
+              ),
+              child: Container(
+                height: size.height / 2.5,
+                width: size.width / 2,
+                decoration: BoxDecoration(border: Border.all()),
+                child: data['message'] != ""
+                    ? Image.network(
+                  data['message'],
+                  fit: BoxFit.fill,
+                )
+                    : CircularProgressIndicator(),
               ),
             ),
-    );
+          ),
+        );
+      }
+      break;
+      case 'document': {
+        return Align(
+          alignment: Alignment.centerRight,
+          child:  Container(
+              height:
+              data['message'].keys.first.contains('.pdf')
+                  ? MediaQuery.of(context).size.height * 0.3
+                  : 70.0,
+              margin: EdgeInsets.only(
+                left: MediaQuery.of(context).size.width / 3,
+                right: 5.0,
+                top: 15.0,
+              ),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  color:  Color.fromRGBO(102, 102, 255, 1),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: data['message']
+                    .keys
+                    .first
+                    .contains('.pdf')
+                    ? Stack(
+                  children: [
+                    Center(
+                        child: Text(
+                          'Loading Error',
+                          style: TextStyle(
+                            fontFamily: 'Lora',
+                            color: Colors.red,
+                            fontSize: 20.0,
+                            letterSpacing: 1.0,
+                          ),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: PdfView(
+                        path:
+                        data['message'].keys.first,
+                      ),
+                    ),
+                    Center(
+                      child: GestureDetector(
+                        child: Icon(
+                          Icons.open_in_new_rounded,
+                          size: 40.0,
+                          color: Colors.blue,
+                        ),
+                        onTap: () async {
+                          final OpenResult openResult = await OpenFile.open(
+                              data['message']
+                                  .keys
+                                  .first);
+                          PeopleCubit.get(context).openFileResultStatus(openResult: openResult);
+                        },
+                      ),
+                    ),
+                  ],
+                )
+                    : GestureDetector(
+                  onTap: () async {
+      /*              final OpenResult openResult = await OpenFile.open(
+                        this._allConversationMessages[index].keys.first);
+
+                    openFileResultStatus(openResult: openResult);*/
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(
+                        width: 20.0,
+                      ),
+                      Icon(
+                        IconBroken.Document,
+                        color: Colors.white,
+                      ),
+                      SizedBox(
+                        width: 20.0,
+                      ),
+                      Expanded(
+                        child: Text(
+                          data['message']
+                              .keys
+                              .first
+                              .split("/")
+                              .last,
+                          style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 1.0,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )),
+        );
+      }
+      break;
+      default: {
+        return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(),
+        );
+      }
+      break;
+    }
   }
-}
+  }
+
 
 class ShowImage extends StatelessWidget {
   final String imageUrl;

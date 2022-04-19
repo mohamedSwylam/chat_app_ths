@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:bloc/bloc.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/states.dart';
@@ -49,12 +50,13 @@ class PeopleCubit extends Cubit<PeopleStates> {
   void sendMessage({
     required String receiverId,
     required String dateTime,
-    required String text,
+    required String message,
+    required String type,
   }) {
     MessageModel model = MessageModel(
       dateTime: dateTime,
-      message: text,
-      type: 'text',
+      message: message,
+      type: type,
       receiverId: receiverId,
       senderID: service.user!.uid,
     );
@@ -624,7 +626,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
       'py',
       'text'
     ];
-
     try {
       if (!await Permission.storage.isGranted) takePermissionForStorage();
 
@@ -656,8 +657,8 @@ class PeopleCubit extends Cubit<PeopleStates> {
 
             if (downloadedDocumentPath != null) {
               chatDocumentUrl = downloadedDocumentPath;
-              sendVoiceMessage(
-                  receiverId: receiverId, dateTime: dateTime, message: message);
+              sendMessage(
+                  receiverId: receiverId, dateTime: dateTime, message: downloadedDocumentPath,type:'document');
             }
           }
 
@@ -722,4 +723,15 @@ class PeopleCubit extends Cubit<PeopleStates> {
       );
     }
   }
+  void openFileResultStatus({required OpenResult openResult}) {
+    if (openResult.type == ResultType.permissionDenied)
+      showSnackBar(context,'Permission Denied to Open File',);
+    else if (openResult.type == ResultType.noAppToOpen)
+      showSnackBar(context,'No App Found to Open',);
+    else if (openResult.type == ResultType.error)
+    showSnackBar(context,'Error in Opening File',);
+    else if (openResult.type == ResultType.fileNotFound)
+    showSnackBar(context,'Sorry, File Not Found',);
+  }
+
 }

@@ -80,8 +80,10 @@ dependencies:
   just_audio: ^0.9.7
   percent_indicator: ^3.0.1
   record: ^3.0.0
+  open_file: ^3.2.1
   permission_handler: ^9.2.0
   circle_list: ^1.0.5
+  pdf_viewer_plugin: ^2.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
