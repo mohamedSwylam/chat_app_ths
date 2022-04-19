@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
-import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../models/user_model.dart';
 import '../modules/people_screen/chat_room_screen.dart';
@@ -276,7 +276,13 @@ class MyMessageItem extends StatelessWidget {
             width: size.width/2,
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
             child: InkWell(
-             onTap: (){},
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => PDFView(
+                    url: data['message'],
+                  ),
+                ),
+              ),
               child: Container(
                 height: size.height / 2.5,
                 width: size.width / 2,
@@ -318,6 +324,31 @@ class ShowImage extends StatelessWidget {
         width: size.width,
         color: Colors.black,
         child: Image.network(imageUrl),
+      ),
+    );
+  }
+}
+class PDFView extends StatelessWidget {
+  final String url;
+  PdfViewerController? _pdfViewerController;
+  PDFView({required this.url, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Pdf View'),
+      ),
+      body: Container(
+        height: size.height,
+        width: size.width,
+        color: Colors.black,
+        child: SfPdfViewer.network(
+            url,
+            controller: _pdfViewerController,
+            )
       ),
     );
   }
