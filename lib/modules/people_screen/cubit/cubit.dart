@@ -236,30 +236,30 @@ class PeopleCubit extends Cubit<PeopleStates> {
 
   //audio recorder
   /// Audio Player and Dio Downloader Initialized
-  final AudioPlayer _justAudioPlayer = AudioPlayer();
+  final AudioPlayer justAudioPlayer = AudioPlayer();
 
-  final Record _record = Record();
+  final Record record = Record();
 
   /// Some Integer Value Initialized
-  late double _currAudioPlayingTime;
-  int _lastAudioPlayingIndex = 0;
+  late double currAudioPlayingTime;
+  int lastAudioPlayingIndex = 0;
 
-  double _audioPlayingSpeed = 1.0;
+  double audioPlayingSpeed = 1.0;
 
   /// Audio Playing Time Related
-  String _totalDuration = '0:00';
-  String _loadingTime = '0:00';
+  String totalDuration = '0:00';
+  String loadingTime = '0:00';
 
-  double _chatBoxHeight = 0.0;
+  double chatBoxHeight = 0.0;
 
-  String _hintText = "Type Here...";
+  String hintText = "Type Here...";
 
   late Directory _audioDirectory;
 
   /// For Audio Player
-  IconData _iconData = Icons.play_arrow_rounded;
+  IconData iconData = Icons.play_arrow_rounded;
 
-  final ScrollController _scrollController = ScrollController(
+  final ScrollController _crollController = ScrollController(
     initialScrollOffset: 0.0,
   );
 
@@ -296,15 +296,15 @@ class PeopleCubit extends Cubit<PeopleStates> {
   }) async {
     await SystemChannels.textInput.invokeMethod('TextInput.hide');
 
-    if (_justAudioPlayer.duration != null) {
-      _justAudioPlayer.stop();
-      _iconData = Icons.play_arrow_rounded;
+    if (justAudioPlayer.duration != null) {
+      justAudioPlayer.stop();
+      iconData = Icons.play_arrow_rounded;
       emit(JustAudioPlayerState());
     }
 
-    await _justAudioPlayer.setFilePath(recordedFilePath);
+    await justAudioPlayer.setFilePath(recordedFilePath);
 
-    if (_justAudioPlayer.duration!.inMinutes > 20)
+    if (justAudioPlayer.duration!.inMinutes > 20)
       showSnackBar(
           "Audio File Duration Can't be greater than 20 minutes", context);
     else {
@@ -321,35 +321,96 @@ class PeopleCubit extends Cubit<PeopleStates> {
             receiverId: receiverId, dateTime: dateTime, message: downloadedVoicePath,type:'audio');
       }
     }
-
-    /*      setState(() {
-            this._allConversationMessages.add({
-              recordedFilePath: _messageTime,
-            });
-            this._chatMessageCategoryHolder.add(ChatMessageTypes.Audio);
-            this._conversationMessageHolder.add(false);
+  }
+ /* void chatMicrophoneOnTapAction(int index) async {
+    try {
+      justAudioPlayer.positionStream.listen((event) {
+          setState(() {
+            _currAudioPlayingTime = event.inMicroseconds.ceilToDouble();
+            _loadingTime =
+            '${event.inMinutes} : ${event.inSeconds > 59 ? event.inSeconds % 60 : event.inSeconds}';
           });
+      });
+
+      justAudioPlayer.playerStateStream.listen((event) {
+        if (event.processingState == ProcessingState.completed) {
+          justAudioPlayer.stop();
+            setState(() {
+              this.loadingTime = '0:00';
+              this.iconData = Icons.play_arrow_rounded;
+            });
+        }
+      });
+
+      if (lastAudioPlayingIndex != index) {
+        await justAudioPlayer
+            .setFilePath(this.allConversationMessages[index].keys.first);
 
           setState(() {
-            _scrollController.jumpTo(
-              _scrollController.position.maxScrollExtent +
-                  _amountToScroll(ChatMessageTypes.Audio)+30.0,
-            );
+            lastAudioPlayingIndex = index;
+            totalDuration =
+            '${justAudioPlayer.duration!.inMinutes} : ${justAudioPlayer.duration!.inSeconds > 59 ? justAudioPlayer.duration!.inSeconds % 60 : justAudioPlayer.duration!.inSeconds}';
+            iconData = Icons.pause;
+            this.audioPlayingSpeed = 1.0;
+            justAudioPlayer.setSpeed(this.audioPlayingSpeed);
           });
 
-        await _localDatabase.insertMessageInUserTable(
-            userName: widget.userName,
-            actualMessage: recordedFilePath.toString(),
-            chatMessageTypes: ChatMessageTypes.Audio,
-            messageHolderType: MessageHolderType.Me,
-            messageDateLocal: DateTime.now().toString().split(" ")[0],
-            messageTimeLocal: _messageTime);
+        await justAudioPlayer.play();
+      } else {
+        print(justAudioPlayer.processingState);
+        if (justAudioPlayer.processingState == ProcessingState.idle) {
+          await justAudioPlayer
+              .setFilePath(this.allConversationMessages[index].keys.first);
+            setState(() {
+              _lastAudioPlayingIndex = index;
+              _totalDuration =
+              '${_justAudioPlayer.duration!.inMinutes} : ${_justAudioPlayer.duration!.inSeconds}';
+              _iconData = Icons.pause;
+            });
+
+          await _justAudioPlayer.play();
+        } else if (_justAudioPlayer.playing) {
+            setState(() {
+              _iconData = Icons.play_arrow_rounded;
+            });
+
+          await _justAudioPlayer.pause();
+        } else if (_justAudioPlayer.processingState == ProcessingState.ready) {
+          if (mounted) {
+            setState(() {
+              _iconData = Icons.pause;
+            });
+          }
+
+          await _justAudioPlayer.play();
+        } else if (_justAudioPlayer.processingState ==
+            ProcessingState.completed) {}
       }
-       setState(() {
-          this._isLoading = false;
-        });*/
+    } catch (e) {
+      print('Audio Playing Error');
+      showToast('May be Audio File Not Found', _fToast);
+    }
   }
 
+  void _chatMicrophoneOnLongPressAction() async {
+    if (_justAudioPlayer.playing) {
+      await _justAudioPlayer.stop();
+
+      if (mounted) {
+        setState(() {
+          print('Audio Play Completed');
+          _justAudioPlayer.stop();
+          if (mounted) {
+            setState(() {
+              _loadingTime = '0:00';
+              _iconData = Icons.play_arrow_rounded;
+              _lastAudioPlayingIndex = -1;
+            });
+          }
+        });
+      }
+    }
+  }*/
   void voiceTake(
     context, {
     required String receiverId,
@@ -362,16 +423,16 @@ class PeopleCubit extends Cubit<PeopleStates> {
         showSnackBar("Microphone Permission Required To Record Voice", context);
     } else {
       if (await this._record.isRecording()) {
-        _hintText = 'Type Here...';
+        hintText = 'Type Here...';
         emit(ChangeHintTextToTypeHere());
         final String? recordedFilePath = await this._record.stop();
         _voiceAndAudioSend(context, recordedFilePath.toString(),
             receiverId: receiverId, dateTime: dateTime, message: message);
       } else {
-        _hintText = 'Recording....';
+        hintText = 'Recording....';
         emit(ChangeHintTextToRecording());
         await this
-            ._record
+            .record
             .start(
               path: '${_audioDirectory.path}${DateTime.now()}.aac',
             )
@@ -567,7 +628,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
                             color: Colors.lightGreen,
                           ),
                           onTap: () async {
-
+                            pickAudioFromStorage(context,receiverId: receiverId,dateTime: dateTime,message: message);
                           },
                         ),
                       ),

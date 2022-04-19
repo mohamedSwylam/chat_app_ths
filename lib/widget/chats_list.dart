@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../models/user_model.dart';
@@ -210,6 +211,7 @@ class MyMessageItem extends StatelessWidget {
   final QueryDocumentSnapshot<Object?> data;
   @override
   Widget build(BuildContext context) {
+    var cubit=PeopleCubit.get(context);
     final size = MediaQuery.of(context).size;
     switch (data['type']) {
       case 'text':
@@ -317,28 +319,153 @@ class MyMessageItem extends StatelessWidget {
                 ),
 
               )),
-        ); Align(
-          alignment: Alignment.centerRight,
+        );
+      }
+      break;
+      case 'audio': {
+        return Align(
+          alignment: Alignment.centerLeft,
           child: Container(
-            height: size.height / 2.5,
-            width: size.width/2,
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-            child: InkWell(
-              child: Container(
-                height: size.height / 2.5,
-                width: size.width / 2,
-                decoration: BoxDecoration(border: Border.all()),
-                child: ElevatedButton(
-                  onPressed: (){
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => PDFView(
-                          url: data['message'],
+            margin:  EdgeInsets.only(
+              right: MediaQuery.of(context).size.width / 3,
+              left: 5.0,
+              top: 5.0,
+            ),
+            child: Container(
+              height: 70.0,
+              width: 250.0,
+              decoration: BoxDecoration(
+                color:
+                   Color.fromRGBO(60, 80, 100, 1),
+                borderRadius:
+                    BorderRadius.only(
+                  topRight: Radius.circular(40.0),
+                  bottomLeft: Radius.circular(40.0),
+                  bottomRight: Radius.circular(40.0),
+                )
+              ),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 20.0,
+                  ),
+                  GestureDetector(
+                    onLongPress: () {},
+                    onTap: (){},
+                    child: Icon(
+                      Icons.play_arrow_rounded,
+                      color: Color.fromRGBO(10, 255, 30, 1),
+                      size: 35.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 5.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(
+                              top: 26.0,
+                            ),
+                            child: LinearPercentIndicator(
+                              percent: justAudioPlayer.duration == null
+                                  ? 0.0
+                                  : _lastAudioPlayingIndex == index
+                                  ? _currAudioPlayingTime /
+                                  _justAudioPlayer
+                                      .duration!.inMicroseconds
+                                      .ceilToDouble() <=
+                                  1.0
+                                  ? _currAudioPlayingTime /
+                                  _justAudioPlayer
+                                      .duration!.inMicroseconds
+                                      .ceilToDouble()
+                                  : 0.0
+                                  : 0,
+                              backgroundColor: Colors.black26,
+                              progressColor:
+                              this._conversationMessageHolder[index]
+                                  ? Colors.lightBlue
+                                  : Colors.amber,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0, right: 7.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      _lastAudioPlayingIndex == index
+                                          ? _loadingTime
+                                          : '0:00',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      _lastAudioPlayingIndex == index
+                                          ? _totalDuration
+                                          : '',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 15.0),
+                    child: GestureDetector(
+                      child: _lastAudioPlayingIndex != index
+                          ? CircleAvatar(
+                        radius: 23.0,
+                        backgroundColor:
+                        this._conversationMessageHolder[index]
+                            ? Color.fromRGBO(60, 80, 100, 1)
+                            : Color.fromRGBO(102, 102, 255, 1),
+                        backgroundImage: ExactAssetImage(
+                          "assets/images/google.png",
                         ),
-                      ),);
-                  },
-                  child: Text(data['message']),
-                ),
+                      )
+                          : Text(
+                        '${this._audioPlayingSpeed.toString().contains('.0') ? this._audioPlayingSpeed.toString().split('.')[0] : this._audioPlayingSpeed}x',
+                        style: TextStyle(
+                            color: Colors.white, fontSize: 18.0),
+                      ),
+                      onTap: () {
+                        print('Audio Play Speed Tapped');
+                        if (mounted) {
+                          setState(() {
+                            if (this._audioPlayingSpeed != 3.0)
+                              this._audioPlayingSpeed += 0.5;
+                            else
+                              this._audioPlayingSpeed = 1.0;
+
+                            _justAudioPlayer.setSpeed(this._audioPlayingSpeed);
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
