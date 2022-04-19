@@ -270,25 +270,73 @@ class MyMessageItem extends StatelessWidget {
       break;
       case 'document': {
         return Align(
+          alignment: Alignment.centerLeft,
+          child: Container(
+              padding:
+              EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
+                ),
+                color: Color(0xff006D84),
+              ),
+              child: InkWell(
+                onTap: (){
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PDFView(
+                        url: data['message'],
+                      ),
+                    ),);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      IconBroken.Document,
+                      color: Colors.white,
+                    ),
+                    SizedBox(
+                      width: 10.0,
+                    ),
+                    Text(
+                      'Document',
+                      style: TextStyle(
+                        color: Colors.white,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1.0,
+                      ),
+                    ),
+                  ],
+                ),
+
+              )),
+        ); Align(
           alignment: Alignment.centerRight,
           child: Container(
             height: size.height / 2.5,
             width: size.width/2,
             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
             child: InkWell(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => PDFView(
-                    url: data['message'],
-                  ),
-                ),
-              ),
               child: Container(
                 height: size.height / 2.5,
                 width: size.width / 2,
                 decoration: BoxDecoration(border: Border.all()),
                 child: ElevatedButton(
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PDFView(
+                          url: data['message'],
+                        ),
+                      ),);
+                  },
                   child: Text(data['message']),
                 ),
               ),

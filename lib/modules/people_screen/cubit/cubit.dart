@@ -308,9 +308,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
       showSnackBar(
           "Audio File Duration Can't be greater than 20 minutes", context);
     else {
-      /*     setState(() {
-          this._isLoading = true;
-        });*/
+
       final String _messageTime =
           "${DateTime.now().hour}:${DateTime.now().minute}";
 
@@ -319,9 +317,8 @@ class PeopleCubit extends Cubit<PeopleStates> {
           reference: 'chatVoices/');
 
       if (downloadedVoicePath != null) {
-        chatVoiceUrl = downloadedVoicePath;
-        sendVoiceMessage(
-            receiverId: receiverId, dateTime: dateTime, message: message);
+        sendMessage(
+            receiverId: receiverId, dateTime: dateTime, message: downloadedVoicePath,type:'audio');
       }
     }
 
@@ -570,33 +567,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
                             color: Colors.lightGreen,
                           ),
                           onTap: () async {
-/*                        final List<String> _allowedExtensions = const [
-                          'mp3',
-                          'm4a',
-                          'wav',
-                          'ogg',
-                        ];
 
-                        final FilePickerResult? _audioFilePickerResult =
-                        await FilePicker.platform.pickFiles(
-                          type: FileType.audio,
-                        );
-
-                        Navigator.pop(context);
-
-                        if (_audioFilePickerResult != null) {
-                          _audioFilePickerResult.files.forEach((element) {
-                            print('Name: ${element.path}');
-                            print('Extension: ${element.extension}');
-                            if (_allowedExtensions
-                                .contains(element.extension)) {
-                              _voiceAndAudioSend(element.path.toString(),
-                                  audioExtension: '.${element.extension}');
-                            } else {
-                              _voiceAndAudioSend(element.path.toString());
-                            }
-                          });
-                        }*/
                           },
                         ),
                       ),
@@ -608,7 +579,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
   }
 
   // document sent
-  String? chatDocumentUrl;
 
   Future<void> pickFileFromStorage(context,{
     required String receiverId,
@@ -656,7 +626,6 @@ class PeopleCubit extends Cubit<PeopleStates> {
                     reference: 'chatDocuments/');
 
             if (downloadedDocumentPath != null) {
-              chatDocumentUrl = downloadedDocumentPath;
               sendMessage(
                   receiverId: receiverId, dateTime: dateTime, message: downloadedDocumentPath,type:'document');
             }
@@ -733,5 +702,38 @@ class PeopleCubit extends Cubit<PeopleStates> {
       showSnackBar('Error in Opening File', context);
     else if (openResult.type == ResultType.fileNotFound)
       showSnackBar('Sorry, File Not Found', context);
+  }
+  //send audio
+
+  Future<void> pickAudioFromStorage(context,{
+    required String receiverId,
+    required String dateTime,
+    required String message,
+  }) async {
+    final List<String> _allowedExtensions = const [
+      'mp3',
+      'm4a',
+      'wav',
+      'ogg',
+    ];
+    final FilePickerResult? _audioFilePickerResult =
+    await FilePicker.platform.pickFiles(
+      type: FileType.audio,
+    );
+    Navigator.pop(context);
+
+    if (_audioFilePickerResult != null) {
+      _audioFilePickerResult.files.forEach((element) {
+        print('Name: ${element.path}');
+        print('Extension: ${element.extension}');
+        if (_allowedExtensions
+            .contains(element.extension)) {
+          _voiceAndAudioSend(context,element.path.toString(),audioExtension: '.${element.extension}',receiverId: receiverId,dateTime: dateTime,message: message
+              );
+        } else {
+          _voiceAndAudioSend(context,element.path.toString(),message: message,dateTime: dateTime,receiverId: receiverId,);
+        }
+      });
+    }
   }
 }
