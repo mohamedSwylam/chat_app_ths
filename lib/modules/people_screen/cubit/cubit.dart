@@ -723,15 +723,15 @@ class PeopleCubit extends Cubit<PeopleStates> {
       );
     }
   }
-  void openFileResultStatus({required OpenResult openResult}) {
-    if (openResult.type == ResultType.permissionDenied)
-      showSnackBar(context,'Permission Denied to Open File',);
-    else if (openResult.type == ResultType.noAppToOpen)
-      showSnackBar(context,'No App Found to Open',);
-    else if (openResult.type == ResultType.error)
-    showSnackBar(context,'Error in Opening File',);
-    else if (openResult.type == ResultType.fileNotFound)
-    showSnackBar(context,'Sorry, File Not Found',);
-  }
 
+  void openFileResultStatus(context,{required OpenResult openResult}) {
+    if (openResult.type == ResultType.permissionDenied)
+      showSnackBar('Permission Denied to Open File', context);
+    else if (openResult.type == ResultType.noAppToOpen)
+      showSnackBar('No App Found to Open', context);
+    else if (openResult.type == ResultType.error)
+      showSnackBar('Error in Opening File', context);
+    else if (openResult.type == ResultType.fileNotFound)
+      showSnackBar('Sorry, File Not Found', context);
+  }
 }

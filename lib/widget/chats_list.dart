@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
+import 'package:flutter_cached_pdfview/flutter_cached_pdfview.dart';
 
 import '../models/user_model.dart';
 import '../modules/people_screen/chat_room_screen.dart';
@@ -207,7 +208,6 @@ class MyMessageItem extends StatelessWidget {
   }) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> data;
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -271,101 +271,24 @@ class MyMessageItem extends StatelessWidget {
       case 'document': {
         return Align(
           alignment: Alignment.centerRight,
-          child:  Container(
-              height:
-              data['message'].keys.first.contains('.pdf')
-                  ? MediaQuery.of(context).size.height * 0.3
-                  : 70.0,
-              margin: EdgeInsets.only(
-                left: MediaQuery.of(context).size.width / 3,
-                right: 5.0,
-                top: 15.0,
-              ),
+          child: Container(
+            height: size.height / 2.5,
+            width: size.width/2,
+            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+            child: InkWell(
+             onTap: (){},
               child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  color:  Color.fromRGBO(102, 102, 255, 1),
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                child: data['message']
-                    .keys
-                    .first
-                    .contains('.pdf')
-                    ? Stack(
-                  children: [
-                    Center(
-                        child: Text(
-                          'Loading Error',
-                          style: TextStyle(
-                            fontFamily: 'Lora',
-                            color: Colors.red,
-                            fontSize: 20.0,
-                            letterSpacing: 1.0,
-                          ),
-                        )),
-                    Padding(
-                      padding: EdgeInsets.all(10.0),
-                      child: PdfView(
-                        path:
-                        data['message'].keys.first,
-                      ),
-                    ),
-                    Center(
-                      child: GestureDetector(
-                        child: Icon(
-                          Icons.open_in_new_rounded,
-                          size: 40.0,
-                          color: Colors.blue,
-                        ),
-                        onTap: () async {
-                          final OpenResult openResult = await OpenFile.open(
-                              data['message']
-                                  .keys
-                                  .first);
-                          PeopleCubit.get(context).openFileResultStatus(openResult: openResult);
-                        },
-                      ),
-                    ),
-                  ],
+                height: size.height / 2.5,
+                width: size.width / 2,
+                decoration: BoxDecoration(border: Border.all()),
+                child: PDF().cachedFromUrl(
+                  'http://africau.edu/images/default/sample.pdf',
+                  placeholder: (progress) => Center(child: Text('$progress %')),
+                  errorWidget: (error) => Center(child: Text(error.toString())),
                 )
-                    : GestureDetector(
-                  onTap: () async {
-      /*              final OpenResult openResult = await OpenFile.open(
-                        this._allConversationMessages[index].keys.first);
-
-                    openFileResultStatus(openResult: openResult);*/
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: 20.0,
-                      ),
-                      Icon(
-                        IconBroken.Document,
-                        color: Colors.white,
-                      ),
-                      SizedBox(
-                        width: 20.0,
-                      ),
-                      Expanded(
-                        child: Text(
-                          data['message']
-                              .keys
-                              .first
-                              .split("/")
-                              .last,
-                          style: TextStyle(
-                            color: Colors.white,
-                            letterSpacing: 1.0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              )),
+              ),
+            ),
+          ),
         );
       }
       break;
