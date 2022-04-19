@@ -281,11 +281,10 @@ class MyMessageItem extends StatelessWidget {
                 height: size.height / 2.5,
                 width: size.width / 2,
                 decoration: BoxDecoration(border: Border.all()),
-                child: PDF().cachedFromUrl(
-                  'http://africau.edu/images/default/sample.pdf',
-                  placeholder: (progress) => Center(child: Text('$progress %')),
-                  errorWidget: (error) => Center(child: Text(error.toString())),
-                )
+                child: ElevatedButton(
+                  onPressed: (){},
+                  child: Text(data['message']),
+                ),
               ),
             ),
           ),

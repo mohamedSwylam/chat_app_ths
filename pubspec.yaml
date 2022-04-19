@@ -53,7 +53,6 @@ dependencies:
   wave: ^0.2.0
   image_picker: ^0.8.4+10
   csc_picker: ^0.2.6
-  uuid: 3.0.4
   url_launcher: ^6.0.12
   sizer: ^2.0.15
   flutter_switch: ^0.3.2
@@ -81,7 +80,8 @@ dependencies:
   percent_indicator: ^3.0.1
   record: ^3.0.0
   open_file: ^3.2.1
-  flutter_cached_pdfview: ^0.4.1
+  syncfusion_flutter_pdfviewer: ^20.1.48-beta
+  uuid: ^3.0.6
   permission_handler: ^9.2.0
   circle_list: ^1.0.5
   pdf_viewer_plugin: ^2.0.1
