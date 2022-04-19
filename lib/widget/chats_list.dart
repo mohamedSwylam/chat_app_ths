@@ -52,8 +52,8 @@ class ChatsList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
                   if (service.user!.uid == data['senderID'])
-                    return MyMessageItem(data: data);
-                  return MessageItem(data: data);
+                    return MyMessageItem(data: data,index: index);
+                  return MessageItem(data: data,index: index,);
                 },
               ),
             );
@@ -68,9 +68,11 @@ class MessageItem extends StatelessWidget {
   MessageItem({
     Key? key,
     required this.data,
+    required this.index,
   }) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> data;
+  final int index;
 
   @override
   Widget build(BuildContext context) {
@@ -206,9 +208,11 @@ class MyMessageItem extends StatelessWidget {
   MyMessageItem({
     Key? key,
     required this.data,
+    required this.index,
   }) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> data;
+  final int index;
   @override
   Widget build(BuildContext context) {
     var cubit=PeopleCubit.get(context);
@@ -324,25 +328,18 @@ class MyMessageItem extends StatelessWidget {
       break;
       case 'audio': {
         return Align(
-          alignment: Alignment.centerLeft,
+          alignment: Alignment.centerRight,
           child: Container(
-            margin:  EdgeInsets.only(
-              right: MediaQuery.of(context).size.width / 3,
-              left: 5.0,
-              top: 5.0,
-            ),
-            child: Container(
-              height: 70.0,
-              width: 250.0,
+              padding:
+              EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
-                color:
-                   Color.fromRGBO(60, 80, 100, 1),
-                borderRadius:
-                    BorderRadius.only(
-                  topRight: Radius.circular(40.0),
-                  bottomLeft: Radius.circular(40.0),
-                  bottomRight: Radius.circular(40.0),
-                )
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(32),
+                  topRight: Radius.circular(32),
+                  bottomRight: Radius.circular(32),
+                ),
+                color: Color(0xff006D84),
               ),
               child: Row(
                 children: [
@@ -351,9 +348,11 @@ class MyMessageItem extends StatelessWidget {
                   ),
                   GestureDetector(
                     onLongPress: () {},
-                    onTap: (){},
+                    onTap: () {},
                     child: Icon(
-                      Icons.play_arrow_rounded,
+                      index == cubit.lastAudioPlayingIndex
+                          ? cubit.iconData
+                          : Icons.play_arrow_rounded,
                       color: Color.fromRGBO(10, 255, 30, 1),
                       size: 35.0,
                     ),
@@ -369,16 +368,16 @@ class MyMessageItem extends StatelessWidget {
                               top: 26.0,
                             ),
                             child: LinearPercentIndicator(
-                              percent: justAudioPlayer.duration == null
+                              percent: cubit.justAudioPlayer.duration == null
                                   ? 0.0
-                                  : _lastAudioPlayingIndex == index
-                                  ? _currAudioPlayingTime /
-                                  _justAudioPlayer
+                                  : cubit.lastAudioPlayingIndex == index
+                                  ? cubit.currAudioPlayingTime /
+                                  cubit.justAudioPlayer
                                       .duration!.inMicroseconds
                                       .ceilToDouble() <=
                                   1.0
-                                  ? _currAudioPlayingTime /
-                                  _justAudioPlayer
+                                  ? cubit.currAudioPlayingTime /
+                                  cubit.justAudioPlayer
                                       .duration!.inMicroseconds
                                       .ceilToDouble()
                                   : 0.0
@@ -402,8 +401,8 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      _lastAudioPlayingIndex == index
-                                          ? _loadingTime
+                                      cubit.lastAudioPlayingIndex == index
+                                          ? cubit.loadingTime
                                           : '0:00',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -415,8 +414,8 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      _lastAudioPlayingIndex == index
-                                          ? _totalDuration
+                                      cubit.lastAudioPlayingIndex == index
+                                          ? cubit.totalDuration
                                           : '',
                                       style: TextStyle(
                                         color: Colors.white,
@@ -434,7 +433,7 @@ class MyMessageItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: GestureDetector(
-                      child: _lastAudioPlayingIndex != index
+                      child: cubit.lastAudioPlayingIndex != index
                           ? CircleAvatar(
                         radius: 23.0,
                         backgroundColor:
@@ -446,13 +445,13 @@ class MyMessageItem extends StatelessWidget {
                         ),
                       )
                           : Text(
-                        '${this._audioPlayingSpeed.toString().contains('.0') ? this._audioPlayingSpeed.toString().split('.')[0] : this._audioPlayingSpeed}x',
+                        '${cubit.audioPlayingSpeed.toString().contains('.0') ? cubit.audioPlayingSpeed.toString().split('.')[0] : cubit.audioPlayingSpeed}x',
                         style: TextStyle(
                             color: Colors.white, fontSize: 18.0),
                       ),
                       onTap: () {
                         print('Audio Play Speed Tapped');
-                        if (mounted) {
+                       /* if (mounted) {
                           setState(() {
                             if (this._audioPlayingSpeed != 3.0)
                               this._audioPlayingSpeed += 0.5;
@@ -460,15 +459,13 @@ class MyMessageItem extends StatelessWidget {
                               this._audioPlayingSpeed = 1.0;
 
                             _justAudioPlayer.setSpeed(this._audioPlayingSpeed);
-                          });
+                          });*/
                         }
                       },
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
+              ),),
         );
       }
       break;
