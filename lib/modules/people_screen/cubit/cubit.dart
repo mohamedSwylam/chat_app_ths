@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -12,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import '../../../layout/cubit/cubit.dart';
@@ -294,105 +294,76 @@ class PeopleCubit extends Cubit<PeopleStates> {
     required String dateTime,
     required String message,
   }) async {
-    await SystemChannels.textInput.invokeMethod('TextInput.hide');
+    final String? downloadedVoicePath = await service.uploadMediaToStorage(
+        File(recordedFilePath),
+        reference: 'chatVoices/');
 
-    if (justAudioPlayer.duration != null) {
-      justAudioPlayer.stop();
-      iconData = Icons.play_arrow_rounded;
-      emit(JustAudioPlayerState());
-    }
-
-    await justAudioPlayer.setFilePath(recordedFilePath);
-
-    if (justAudioPlayer.duration!.inMinutes > 20)
-      showSnackBar(
-          "Audio File Duration Can't be greater than 20 minutes", context);
-    else {
-
-      final String _messageTime =
-          "${DateTime.now().hour}:${DateTime.now().minute}";
-
-      final String? downloadedVoicePath = await service.uploadMediaToStorage(
-          File(recordedFilePath),
-          reference: 'chatVoices/');
-
-      if (downloadedVoicePath != null) {
-        sendMessage(
-            receiverId: receiverId, dateTime: dateTime, message: downloadedVoicePath,type:'audio');
-      }
+    if (downloadedVoicePath != null) {
+      sendMessage(
+          receiverId: receiverId, dateTime: dateTime, message: downloadedVoicePath,type:'audio');
     }
   }
- /* void chatMicrophoneOnTapAction(int index) async {
+/*  void chatMicrophoneOnTapAction(int index,data) async {
     try {
       justAudioPlayer.positionStream.listen((event) {
-          setState(() {
-            _currAudioPlayingTime = event.inMicroseconds.ceilToDouble();
-            _loadingTime =
+            currAudioPlayingTime = event.inMicroseconds.ceilToDouble();
+            loadingTime =
             '${event.inMinutes} : ${event.inSeconds > 59 ? event.inSeconds % 60 : event.inSeconds}';
-          });
+            emit(JustAudioPlayerPositionState());
       });
 
       justAudioPlayer.playerStateStream.listen((event) {
         if (event.processingState == ProcessingState.completed) {
           justAudioPlayer.stop();
-            setState(() {
               this.loadingTime = '0:00';
               this.iconData = Icons.play_arrow_rounded;
-            });
+          emit(JustAudioPlayerStopState());
         }
       });
 
       if (lastAudioPlayingIndex != index) {
         await justAudioPlayer
-            .setFilePath(this.allConversationMessages[index].keys.first);
-
-          setState(() {
+            .setFilePath(data);
             lastAudioPlayingIndex = index;
             totalDuration =
             '${justAudioPlayer.duration!.inMinutes} : ${justAudioPlayer.duration!.inSeconds > 59 ? justAudioPlayer.duration!.inSeconds % 60 : justAudioPlayer.duration!.inSeconds}';
             iconData = Icons.pause;
             this.audioPlayingSpeed = 1.0;
             justAudioPlayer.setSpeed(this.audioPlayingSpeed);
-          });
-
+        emit(JustAudioPlayerSpeedState());
         await justAudioPlayer.play();
       } else {
         print(justAudioPlayer.processingState);
         if (justAudioPlayer.processingState == ProcessingState.idle) {
           await justAudioPlayer
-              .setFilePath(this.allConversationMessages[index].keys.first);
-            setState(() {
-              _lastAudioPlayingIndex = index;
-              _totalDuration =
-              '${_justAudioPlayer.duration!.inMinutes} : ${_justAudioPlayer.duration!.inSeconds}';
-              _iconData = Icons.pause;
-            });
+              .setFilePath(data);
+              lastAudioPlayingIndex = index;
+              totalDuration =
+              '${justAudioPlayer.duration!.inMinutes} : ${justAudioPlayer.duration!.inSeconds}';
+              iconData = Icons.pause;
+          emit(JustAudioPlayerStopState());
 
-          await _justAudioPlayer.play();
-        } else if (_justAudioPlayer.playing) {
-            setState(() {
-              _iconData = Icons.play_arrow_rounded;
-            });
+          await justAudioPlayer.play();
+        } else if (justAudioPlayer.playing) {
+              iconData = Icons.play_arrow_rounded;
+              emit(ChangeIconDataToPlayState());
 
-          await _justAudioPlayer.pause();
-        } else if (_justAudioPlayer.processingState == ProcessingState.ready) {
-          if (mounted) {
-            setState(() {
-              _iconData = Icons.pause;
-            });
-          }
+          await justAudioPlayer.pause();
+        } else if (justAudioPlayer.processingState == ProcessingState.ready) {
+              iconData = Icons.pause;
+              emit(ChangeIconDataToPauseState());
 
-          await _justAudioPlayer.play();
-        } else if (_justAudioPlayer.processingState ==
+          await justAudioPlayer.play();
+        } else if (justAudioPlayer.processingState ==
             ProcessingState.completed) {}
       }
     } catch (e) {
       print('Audio Playing Error');
-      showToast('May be Audio File Not Found', _fToast);
+      //showSnackBar('May be Audio File Not Found',context);
     }
-  }
+  }*/
 
-  void _chatMicrophoneOnLongPressAction() async {
+/*  void _chatMicrophoneOnLongPressAction() async {
     if (_justAudioPlayer.playing) {
       await _justAudioPlayer.stop();
 
@@ -797,4 +768,21 @@ class PeopleCubit extends Cubit<PeopleStates> {
       });
     }
   }
+  //audio test
+  final audioPlayer = AudioPlayer();
+  bool isPlaying = false;
+  Duration duration= Duration.zero;
+  Duration position= Duration.zero;
+  String formatTime(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2,'8');
+    final hours = twoDigits(duration.inHours);
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return [
+      if (duration.inHours > 0) hours,
+      minutes,
+      seconds,
+    ].join(":");
+  }
+  String url='https://www.soundhelix.com/examples/mp3/SoundHelix-Song-13.mp3';
 }

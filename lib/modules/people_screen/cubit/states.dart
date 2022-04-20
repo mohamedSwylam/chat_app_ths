@@ -12,6 +12,11 @@ class ChangeBetweenSendAndVoiceIcon extends PeopleStates {}
 class ChangeHintTextToTypeHere extends PeopleStates {}
 class ChangeHintTextToRecording extends PeopleStates {}
 class JustAudioPlayerState extends PeopleStates {}
+class JustAudioPlayerPositionState extends PeopleStates {}
+class JustAudioPlayerStopState extends PeopleStates {}
+class ChangeIconDataToPauseState extends PeopleStates {}
+class JustAudioPlayerSpeedState extends PeopleStates {}
+class ChangeIconDataToPlayState extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;

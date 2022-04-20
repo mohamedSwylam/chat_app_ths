@@ -349,10 +349,16 @@ class MyMessageItem extends StatelessWidget {
                   ),
                   GestureDetector(
                     onLongPress: () {},
-                    onTap: () {},
+                    onTap: ()async{
+                      if (cubit.isPlaying) {
+                        await cubit.audioPlayer.pause();
+                      } else {
+                        await cubit.audioPlayer.play(cubit.url);
+                      }
+                    },
                     child: Icon(
-                      index == cubit.lastAudioPlayingIndex
-                          ? cubit.iconData
+                       cubit.isPlaying
+                          ? Icons.pause
                           : Icons.play_arrow_rounded,
                       color: Color.fromRGBO(10, 255, 30, 1),
                       size: 35.0,
@@ -368,29 +374,18 @@ class MyMessageItem extends StatelessWidget {
                             margin: EdgeInsets.only(
                               top: 26.0,
                             ),
-                            child: LinearPercentIndicator(
-                              percent: cubit.justAudioPlayer.duration == null
-                                  ? 0.0
-                                  : cubit.lastAudioPlayingIndex == data['message']
-                                  ? cubit.currAudioPlayingTime /
-                                  cubit.justAudioPlayer
-                                      .duration!.inMicroseconds
-                                      .ceilToDouble() <=
-                                  1.0
-                                  ? cubit.currAudioPlayingTime /
-                                  cubit.justAudioPlayer
-                                      .duration!.inMicroseconds
-                                      .ceilToDouble()
-                                  : 0.0
-                                  : 0,
-                              backgroundColor: Colors.black26,
-                              progressColor: Colors.lightBlue
-                            ),
+                            child:  Slider(
+                                min: 0,
+                                max: cubit.duration.inSeconds.toDouble(),
+                                value: cubit.position.inSeconds.toDouble(),
+                                onChanged: (value) async {},
+                                activeColor: Color.fromRGBO(10, 255, 30, 1),
+                    ),
                           ),
                           SizedBox(
                             height: 10.0,
                           ),
-                          Padding(
+                          Padding (
                             padding: EdgeInsets.only(left: 10.0, right: 7.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -399,9 +394,7 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      cubit.lastAudioPlayingIndex == data['message']
-                                          ? cubit.loadingTime
-                                          : '0:00',
+                                      cubit.formatTime(cubit.position),
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -412,9 +405,7 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      cubit.lastAudioPlayingIndex == data['message']
-                                          ? cubit.totalDuration
-                                          : '',
+                                      cubit.formatTime(cubit.duration),
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -431,7 +422,7 @@ class MyMessageItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: GestureDetector(
-                      child: cubit.lastAudioPlayingIndex != data['message']
+                      child: cubit.lastAudioPlayingIndex != index
                           ? CircleAvatar(
                         radius: 23.0,
                         backgroundColor: Color.fromRGBO(60, 80, 100, 1),
