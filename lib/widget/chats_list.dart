@@ -371,7 +371,7 @@ class MyMessageItem extends StatelessWidget {
                             child: LinearPercentIndicator(
                               percent: cubit.justAudioPlayer.duration == null
                                   ? 0.0
-                                  : cubit.lastAudioPlayingIndex == index
+                                  : cubit.lastAudioPlayingIndex == data['message']
                                   ? cubit.currAudioPlayingTime /
                                   cubit.justAudioPlayer
                                       .duration!.inMicroseconds
@@ -399,7 +399,7 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      cubit.lastAudioPlayingIndex == index
+                                      cubit.lastAudioPlayingIndex == data['message']
                                           ? cubit.loadingTime
                                           : '0:00',
                                       style: TextStyle(
@@ -412,7 +412,7 @@ class MyMessageItem extends StatelessWidget {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      cubit.lastAudioPlayingIndex == index
+                                      cubit.lastAudioPlayingIndex == data['message']
                                           ? cubit.totalDuration
                                           : '',
                                       style: TextStyle(
@@ -431,7 +431,7 @@ class MyMessageItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: GestureDetector(
-                      child: cubit.lastAudioPlayingIndex != index
+                      child: cubit.lastAudioPlayingIndex != data['message']
                           ? CircleAvatar(
                         radius: 23.0,
                         backgroundColor: Color.fromRGBO(60, 80, 100, 1),
