@@ -1,6 +1,7 @@
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
 import 'package:chat_app_th/shared/styles/icon_broken.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
@@ -383,10 +384,7 @@ class MyMessageItem extends StatelessWidget {
                                   : 0.0
                                   : 0,
                               backgroundColor: Colors.black26,
-                              progressColor:
-                              this._conversationMessageHolder[index]
-                                  ? Colors.lightBlue
-                                  : Colors.amber,
+                              progressColor: Colors.lightBlue
                             ),
                           ),
                           SizedBox(
@@ -436,13 +434,7 @@ class MyMessageItem extends StatelessWidget {
                       child: cubit.lastAudioPlayingIndex != index
                           ? CircleAvatar(
                         radius: 23.0,
-                        backgroundColor:
-                        this._conversationMessageHolder[index]
-                            ? Color.fromRGBO(60, 80, 100, 1)
-                            : Color.fromRGBO(102, 102, 255, 1),
-                        backgroundImage: ExactAssetImage(
-                          "assets/images/google.png",
-                        ),
+                        backgroundColor: Color.fromRGBO(60, 80, 100, 1),
                       )
                           : Text(
                         '${cubit.audioPlayingSpeed.toString().contains('.0') ? cubit.audioPlayingSpeed.toString().split('.')[0] : cubit.audioPlayingSpeed}x',
@@ -460,8 +452,7 @@ class MyMessageItem extends StatelessWidget {
 
                             _justAudioPlayer.setSpeed(this._audioPlayingSpeed);
                           });*/
-                        }
-                      },
+                    },
                     ),
                   ),
                 ],

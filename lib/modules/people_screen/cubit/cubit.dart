@@ -422,10 +422,10 @@ class PeopleCubit extends Cubit<PeopleStates> {
       if (microphoneStatus != PermissionStatus.granted)
         showSnackBar("Microphone Permission Required To Record Voice", context);
     } else {
-      if (await this._record.isRecording()) {
+      if (await this.record.isRecording()) {
         hintText = 'Type Here...';
         emit(ChangeHintTextToTypeHere());
-        final String? recordedFilePath = await this._record.stop();
+        final String? recordedFilePath = await this.record.stop();
         _voiceAndAudioSend(context, recordedFilePath.toString(),
             receiverId: receiverId, dateTime: dateTime, message: message);
       } else {
