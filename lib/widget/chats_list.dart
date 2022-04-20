@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
 import 'package:chat_app_th/shared/styles/icon_broken.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -205,7 +206,7 @@ class MessageItem extends StatelessWidget {
   }
 }
 
-class MyMessageItem extends StatelessWidget {
+class MyMessageItem extends StatefulWidget {
   MyMessageItem({
     Key? key,
     required this.data,
@@ -214,11 +215,27 @@ class MyMessageItem extends StatelessWidget {
 
   final QueryDocumentSnapshot<Object?> data;
   final int index;
+
+  @override
+  State<MyMessageItem> createState() => _MyMessageItemState();
+}
+
+class _MyMessageItemState extends State<MyMessageItem> {
+  @override
+
   @override
   Widget build(BuildContext context) {
     var cubit=PeopleCubit.get(context);
+    void initState() {
+      cubit.audioPlayer.onPlayerStateChanged.listen((state) {
+        setState(() {
+          cubit.isPlaying = state == PlayerState. PLAYING;
+        });
+      });
+      super.initState();
+    }
     final size = MediaQuery.of(context).size;
-    switch (data['type']) {
+    switch (widget.data['type']) {
       case 'text':
         {
           return Align(
@@ -236,7 +253,7 @@ class MyMessageItem extends StatelessWidget {
                   color: Color(0xff006D84),
                 ),
                 child: Text(
-                  data['message'],
+                  widget.data['message'],
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -255,7 +272,7 @@ class MyMessageItem extends StatelessWidget {
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => ShowImage(
-                    imageUrl: data['message'],
+                    imageUrl: widget.data['message'],
                   ),
                 ),
               ),
@@ -263,9 +280,9 @@ class MyMessageItem extends StatelessWidget {
                 height: size.height / 2.5,
                 width: size.width / 2,
                 decoration: BoxDecoration(border: Border.all()),
-                child: data['message'] != ""
+                child: widget.data['message'] != ""
                     ? Image.network(
-                  data['message'],
+                  widget.data['message'],
                   fit: BoxFit.fill,
                 )
                     : CircularProgressIndicator(),
@@ -295,7 +312,7 @@ class MyMessageItem extends StatelessWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (_) => PDFView(
-                        url: data['message'],
+                        url: widget.data['message'],
                       ),
                     ),);
                 },
@@ -422,7 +439,7 @@ class MyMessageItem extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: GestureDetector(
-                      child: cubit.lastAudioPlayingIndex != index
+                      child: cubit.lastAudioPlayingIndex != widget.index
                           ? CircleAvatar(
                         radius: 23.0,
                         backgroundColor: Color.fromRGBO(60, 80, 100, 1),
@@ -460,7 +477,7 @@ class MyMessageItem extends StatelessWidget {
       break;
     }
   }
-  }
+}
 
 
 class ShowImage extends StatelessWidget {
