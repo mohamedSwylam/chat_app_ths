@@ -17,6 +17,9 @@ class JustAudioPlayerStopState extends PeopleStates {}
 class ChangeIconDataToPauseState extends PeopleStates {}
 class JustAudioPlayerSpeedState extends PeopleStates {}
 class ChangeIconDataToPlayState extends PeopleStates {}
+class IsPlayingChangeState extends PeopleStates {}
+class OnDurationChangedState extends PeopleStates {}
+class OnAudioPositionChangedState extends PeopleStates {}
 
 class PickChatImageErrorState extends PeopleStates {
   final String error;

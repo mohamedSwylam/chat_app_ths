@@ -221,33 +221,21 @@ class MyMessageItem extends StatefulWidget {
 }
 
 class _MyMessageItemState extends State<MyMessageItem> {
+
+
+  void initState() {
+    super.initState();
+    PeopleCubit.get(context).player= AudioPlayer();
+    PeopleCubit.get(context).setUp();
+  }
+  void dispose() {
+    super.dispose();
+    PeopleCubit.get(context).player.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    var cubit=PeopleCubit.get(context);
-    Future setAudio() async {
-      // Repeat song when completed
-      cubit.audioPlayer.setReleaseMode(ReleaseMode.LOOP);
-      await cubit.audioPlayer.setUrl(cubit.url);
-    }
-    void initState() {
-      setAudio();
-      cubit.audioPlayer.onPlayerStateChanged.listen((state) {
-        setState(() {
-          cubit.isPlaying = state == PlayerState. PLAYING;
-        });
-      });
-      cubit.audioPlayer.onAudioPositionChanged.listen((newPosition) {
-        setState(() {
-          cubit.position = newPosition;
-        });
-      });
-      super.initState();
-    }
-    void dispose() {
-      cubit.audioPlayer.pause();
-      super.dispose();
-    }
     final size = MediaQuery.of(context).size;
+    var cubit=PeopleCubit.get(context);
     switch (widget.data['type']) {
       case 'text':
         {
@@ -379,15 +367,9 @@ class _MyMessageItemState extends State<MyMessageItem> {
                   ),
                   GestureDetector(
                     onLongPress: () {},
-                    onTap: ()async{
-                      if (cubit.isPlaying) {
-                        await cubit.audioPlayer.pause();
-                      } else {
-                        await cubit.audioPlayer.resume();
-                      }
-                    },
+                    onTap: cubit.tapToPlayOrPauseAudio(widget.data['message']),
                     child: Icon(
-                       cubit.isPlaying
+                      cubit.isPlaying
                           ? Icons.pause
                           : Icons.play_arrow_rounded,
                       color: Color.fromRGBO(10, 255, 30, 1),
@@ -405,14 +387,10 @@ class _MyMessageItemState extends State<MyMessageItem> {
                               top: 26.0,
                             ),
                             child:  Slider(
-                                min: 0,
-                                max: cubit.duration.inSeconds.toDouble(),
-                                value: cubit.position.inSeconds.toDouble(),
-                                onChanged: (value) async {
-                                  final position = Duration (seconds: value.toInt());
-                                  await cubit.audioPlayer.seek(position);
-                                  /// Optional: Play audio if was paused
-                                  await cubit.audioPlayer.resume();
+                              value: cubit.currentPosition.inSeconds.toDouble(),
+                              max: cubit.musicLength.inSeconds.toDouble(),
+                                onChanged: (value) {
+                                  cubit.seekTo(value.toInt());
                                 },
                                 activeColor: Color.fromRGBO(10, 255, 30, 1),
                     ),
@@ -429,7 +407,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      cubit.formatTime(cubit.position),
+                                      '${cubit.formatTime(cubit.currentPosition)}',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -440,7 +418,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      cubit.formatTime(cubit.duration),
+                                      '${cubit.formatTime(cubit.musicLength-cubit.currentPosition)}',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
