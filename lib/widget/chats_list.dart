@@ -224,7 +224,13 @@ class _MyMessageItemState extends State<MyMessageItem> {
   @override
   Widget build(BuildContext context) {
     var cubit=PeopleCubit.get(context);
+    Future setAudio() async {
+      // Repeat song when completed
+      cubit.audioPlayer.setReleaseMode(ReleaseMode.LOOP);
+      await cubit.audioPlayer.setUrl(cubit.url);
+    }
     void initState() {
+      setAudio();
       cubit.audioPlayer.onPlayerStateChanged.listen((state) {
         setState(() {
           cubit.isPlaying = state == PlayerState. PLAYING;
@@ -377,7 +383,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                       if (cubit.isPlaying) {
                         await cubit.audioPlayer.pause();
                       } else {
-                        await cubit.audioPlayer.play(cubit.url);
+                        await cubit.audioPlayer.resume();
                       }
                     },
                     child: Icon(
@@ -402,7 +408,12 @@ class _MyMessageItemState extends State<MyMessageItem> {
                                 min: 0,
                                 max: cubit.duration.inSeconds.toDouble(),
                                 value: cubit.position.inSeconds.toDouble(),
-                                onChanged: (value) async {},
+                                onChanged: (value) async {
+                                  final position = Duration (seconds: value.toInt());
+                                  await cubit.audioPlayer.seek(position);
+                                  /// Optional: Play audio if was paused
+                                  await cubit.audioPlayer.resume();
+                                },
                                 activeColor: Color.fromRGBO(10, 255, 30, 1),
                     ),
                           ),
