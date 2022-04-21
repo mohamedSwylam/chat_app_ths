@@ -222,8 +222,6 @@ class MyMessageItem extends StatefulWidget {
 
 class _MyMessageItemState extends State<MyMessageItem> {
   @override
-
-  @override
   Widget build(BuildContext context) {
     var cubit=PeopleCubit.get(context);
     void initState() {
@@ -232,7 +230,16 @@ class _MyMessageItemState extends State<MyMessageItem> {
           cubit.isPlaying = state == PlayerState. PLAYING;
         });
       });
+      cubit.audioPlayer.onAudioPositionChanged.listen((newPosition) {
+        setState(() {
+          cubit.position = newPosition;
+        });
+      });
       super.initState();
+    }
+    void dispose() {
+      cubit.audioPlayer.pause();
+      super.dispose();
     }
     final size = MediaQuery.of(context).size;
     switch (widget.data['type']) {
