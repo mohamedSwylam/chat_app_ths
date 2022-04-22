@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
 import 'package:chat_app_th/shared/styles/icon_broken.dart';
@@ -230,9 +232,112 @@ class _MyMessageItemState extends State<MyMessageItem> {
   bool isPlaying = false;
   Duration currentPosition = Duration.zero;
   Duration musicLength = Duration.zero;
+ //////////////////////
+  /// Audio Player and Dio Downloader Initialized
+  final AudioPlayer _justAudioPlayer = AudioPlayer();
 
+  final Record _record = Record();
+
+  /// Some Integer Value Initialized
+  late double _currAudioPlayingTime;
+  int _lastAudioPlayingIndex = 0;
+
+  double _audioPlayingSpeed = 1.0;
+
+  /// Audio Playing Time Related
+  String _totalDuration = '0:00';
+  String _loadingTime = '0:00';
+
+  double _chatBoxHeight = 0.0;
+
+  String _hintText = "Type Here...";
+
+  late Directory _audioDirectory;
+
+  /// For Audio Player
+  IconData _iconData = Icons.play_arrow_rounded;
   playFromNet(url) async {
     await player.play(url);
+  }
+  void chatMicrophoneOnTapAction(int index) async {
+    try {
+      _justAudioPlayer.positionStream.listen((event) {
+        if (mounted) {
+          setState(() {
+            _currAudioPlayingTime = event.inMicroseconds.ceilToDouble();
+            _loadingTime =
+            '${event.inMinutes} : ${event.inSeconds > 59 ? event.inSeconds % 60 : event.inSeconds}';
+          });
+        }
+      });
+
+      _justAudioPlayer.playerStateStream.listen((event) {
+        if (event.processingState == ProcessingState.completed) {
+          _justAudioPlayer.stop();
+          if (mounted) {
+            setState(() {
+              this._loadingTime = '0:00';
+              this._iconData = Icons.play_arrow_rounded;
+            });
+          }
+        }
+      });
+
+      if (_lastAudioPlayingIndex != index) {
+        await _justAudioPlayer
+            .setFilePath(this._allConversationMessages[index].keys.first);
+
+        if (mounted) {
+          setState(() {
+            _lastAudioPlayingIndex = index;
+            _totalDuration =
+            '${_justAudioPlayer.duration!.inMinutes} : ${_justAudioPlayer.duration!.inSeconds > 59 ? _justAudioPlayer.duration!.inSeconds % 60 : _justAudioPlayer.duration!.inSeconds}';
+            _iconData = Icons.pause;
+            this._audioPlayingSpeed = 1.0;
+            _justAudioPlayer.setSpeed(this._audioPlayingSpeed);
+          });
+        }
+
+        await _justAudioPlayer.play();
+      } else {
+        print(_justAudioPlayer.processingState);
+        if (_justAudioPlayer.processingState == ProcessingState.idle) {
+          await _justAudioPlayer
+              .setFilePath(this._allConversationMessages[index].keys.first);
+
+          if (mounted) {
+            setState(() {
+              _lastAudioPlayingIndex = index;
+              _totalDuration =
+              '${_justAudioPlayer.duration!.inMinutes} : ${_justAudioPlayer.duration!.inSeconds}';
+              _iconData = Icons.pause;
+            });
+          }
+
+          await _justAudioPlayer.play();
+        } else if (_justAudioPlayer.playing) {
+          if (mounted) {
+            setState(() {
+              _iconData = Icons.play_arrow_rounded;
+            });
+          }
+
+          await _justAudioPlayer.pause();
+        } else if (_justAudioPlayer.processingState == ProcessingState.ready) {
+          if (mounted) {
+            setState(() {
+              _iconData = Icons.pause;
+            });
+          }
+
+          await _justAudioPlayer.play();
+        } else if (_justAudioPlayer.processingState ==
+            ProcessingState.completed) {}
+      }
+    } catch (e) {
+      print('Audio Playing Error');
+      showToast('May be Audio File Not Found', _fToast);
+    }
   }
 
   stopPlay() {
