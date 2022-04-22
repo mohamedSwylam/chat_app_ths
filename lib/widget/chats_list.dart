@@ -241,7 +241,6 @@ class _MyMessageItemState extends State<MyMessageItem> {
 
   setUp() {
     player.setReleaseMode (ReleaseMode. LOOP);
-    playFromNet(widget.data['message']);
     player.onAudioPositionChanged.listen((d) {
       // Give us the current position of the Audio file
       setState(() {
@@ -428,7 +427,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                           isPlaying = false;
                         });
                       } else {
-                        player.resume();
+                        playFromNet(widget.data['message']);
                         setState(() {
                           isPlaying = true;
                         });
