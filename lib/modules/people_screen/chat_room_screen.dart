@@ -10,7 +10,7 @@ import '../../shared/styles/icon_broken.dart';
 import 'cubit/states.dart';
 
 class ChatRoomScreen extends StatelessWidget {
-  UserModel userModel;
+  var userModel;
 
   ChatRoomScreen({required this.userModel, Key? key}) : super(key: key);
 
@@ -32,7 +32,7 @@ class ChatRoomScreen extends StatelessWidget {
                 ),
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage('${userModel.image}'),
+                  backgroundImage: NetworkImage('${userModel['userImage']}'),
                 ),
                 SizedBox(
                   width: 15,
@@ -54,7 +54,7 @@ class ChatRoomScreen extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: ChatsList(receiverId: userModel['uid'],userModel: userModel),
+                  child: ChatsList(receiverId: userModel['uid'],),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(

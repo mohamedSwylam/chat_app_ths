@@ -19,9 +19,8 @@ import '../shared/styles/color.dart';
 
 class ChatsList extends StatelessWidget {
   final String receiverId;
-  final UserModel userModel;
 
-  const ChatsList({Key? key, required this.receiverId,required this.userModel}) : super(key: key);
+   ChatsList({Key? key, required this.receiverId,}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,7 @@ class ChatsList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
                   if (service.user!.uid == data['senderID'])
-                    return MyMessageItem(data: data, index: index,userModel: userModel );
+                    return MyMessageItem(data: data, index: index, );
                   return MessageItem(
                     data: data,
                     index: index,
@@ -219,23 +218,17 @@ class MyMessageItem extends StatefulWidget {
     Key? key,
     required this.data,
     required this.index,
-    required this.userModel,
   }) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> data;
   final int index;
-  final UserModel userModel;
 
   @override
   State<MyMessageItem> createState() => _MyMessageItemState();
 }
 
 class _MyMessageItemState extends State<MyMessageItem> {
-  late AudioPlayer player;
-  bool isPlaying = false;
-  Duration currentPosition = Duration.zero;
-  Duration musicLength = Duration.zero;
- //////////////////////
+
   /// Audio Player and Dio Downloader Initialized
   final AudioPlayer _justAudioPlayer = AudioPlayer();
 
@@ -259,9 +252,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
 
   /// For Audio Player
   IconData _iconData = Icons.play_arrow_rounded;
-/*  playFromNet(url) async {
-    await player.play(url);
-  }*/
+
   void chatMicrophoneOnTapAction(int index) async {
     try {
       _justAudioPlayer.positionStream.listen((event) {
@@ -343,12 +334,15 @@ class _MyMessageItemState extends State<MyMessageItem> {
 
 
 
+  @override
   void initState() {
     super.initState();
-
   }
 
+
+  @override
   void dispose() {
+    _justAudioPlayer.stop();
     super.dispose();
   }
 
@@ -493,7 +487,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                       chatMicrophoneOnTapAction(widget.index);
                     },
                     child: Icon(
-                      isPlaying ? Icons.pause : Icons.play_arrow_rounded,
+                      _iconData,
                       color: Color.fromRGBO(10, 255, 30, 1),
                       size: 35.0,
                     ),
@@ -572,14 +566,8 @@ class _MyMessageItemState extends State<MyMessageItem> {
                   Padding(
                     padding: const EdgeInsets.only(right: 15.0),
                     child: GestureDetector(
-                      child: cubit.lastAudioPlayingIndex != widget.index
-                          ? CircleAvatar(
-                              radius: 23.0,
-                              backgroundColor: Color.fromRGBO(60, 80, 100, 1),
-                    backgroundImage: NetworkImage('${widget.userModel.image}'),
-                            )
-                          : Text(
-                              '${cubit.audioPlayingSpeed.toString().contains('.0') ? cubit.audioPlayingSpeed.toString().split('.')[0] : cubit.audioPlayingSpeed}x',
+                      child: Text(
+                              '${_audioPlayingSpeed.toString().contains('.0') ? _audioPlayingSpeed.toString().split('.')[0] : _audioPlayingSpeed}x',
                               style: TextStyle(
                                   color: Colors.white, fontSize: 18.0),
                             ),
