@@ -1,14 +1,14 @@
 import 'dart:io';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
 import 'package:chat_app_th/shared/styles/icon_broken.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:open_file/open_file.dart';
 import 'package:pdf_viewer_plugin/pdf_viewer_plugin.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:record/record.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 import '../models/user_model.dart';
@@ -18,9 +18,10 @@ import '../shared/components/components.dart';
 import '../shared/styles/color.dart';
 
 class ChatsList extends StatelessWidget {
-  final String? receiverId;
+  final String receiverId;
+  final UserModel userModel;
 
-  const ChatsList({Key? key, this.receiverId}) : super(key: key);
+  const ChatsList({Key? key, required this.receiverId,required this.userModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +57,7 @@ class ChatsList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   var data = snapshot.data!.docs[index];
                   if (service.user!.uid == data['senderID'])
-                    return MyMessageItem(data: data, index: index);
+                    return MyMessageItem(data: data, index: index,userModel: userModel );
                   return MessageItem(
                     data: data,
                     index: index,
@@ -218,10 +219,12 @@ class MyMessageItem extends StatefulWidget {
     Key? key,
     required this.data,
     required this.index,
+    required this.userModel,
   }) : super(key: key);
 
   final QueryDocumentSnapshot<Object?> data;
   final int index;
+  final UserModel userModel;
 
   @override
   State<MyMessageItem> createState() => _MyMessageItemState();
@@ -256,9 +259,9 @@ class _MyMessageItemState extends State<MyMessageItem> {
 
   /// For Audio Player
   IconData _iconData = Icons.play_arrow_rounded;
-  playFromNet(url) async {
+/*  playFromNet(url) async {
     await player.play(url);
-  }
+  }*/
   void chatMicrophoneOnTapAction(int index) async {
     try {
       _justAudioPlayer.positionStream.listen((event) {
@@ -284,8 +287,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
       });
 
       if (_lastAudioPlayingIndex != index) {
-        await _justAudioPlayer
-            .setFilePath(this._allConversationMessages[index].keys.first);
+        await _justAudioPlayer.setUrl(widget.data['message']);
 
         if (mounted) {
           setState(() {
@@ -302,8 +304,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
       } else {
         print(_justAudioPlayer.processingState);
         if (_justAudioPlayer.processingState == ProcessingState.idle) {
-          await _justAudioPlayer
-              .setFilePath(this._allConversationMessages[index].keys.first);
+          await _justAudioPlayer.setUrl(widget.data['message']);
 
           if (mounted) {
             setState(() {
@@ -336,56 +337,19 @@ class _MyMessageItemState extends State<MyMessageItem> {
       }
     } catch (e) {
       print('Audio Playing Error');
-      showToast('May be Audio File Not Found', _fToast);
+      showSnackBar('May be Audio File Not Found',context);
     }
   }
 
-  stopPlay() {
-    player.stop();
-  }
 
-  setUp() {
-    player.setReleaseMode (ReleaseMode. LOOP);
-    player.onAudioPositionChanged.listen((d) {
-      // Give us the current position of the Audio file
-      setState(() {
-        currentPosition = d;
-      });
-      player.onDurationChanged.listen((d) {
-        //Returns the duration of the audio file
-        setState(() {
-          musicLength = d;
-        });
-      });
-    });
-  }
-
-  seekTo(int sec) {
-    // To seek the audio to a new position
-    player.seek(Duration(seconds: sec));
-  }
-
-  String formatTime(Duration duration) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final hours = twoDigits(duration.inHours);
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return [
-      if (duration.inHours > 0) hours,
-      minutes,
-      seconds,
-    ].join(":");
-  }
 
   void initState() {
     super.initState();
-    player = AudioPlayer();
-    setUp();
+
   }
 
   void dispose() {
     super.dispose();
-    player.dispose();
   }
 
   @override
@@ -526,17 +490,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      if (isPlaying) {
-                        stopPlay();
-                        setState(() {
-                          isPlaying = false;
-                        });
-                      } else {
-                        playFromNet(widget.data['message']);
-                        setState(() {
-                          isPlaying = true;
-                        });
-                      }
+                      chatMicrophoneOnTapAction(widget.index);
                     },
                     child: Icon(
                       isPlaying ? Icons.pause : Icons.play_arrow_rounded,
@@ -554,14 +508,24 @@ class _MyMessageItemState extends State<MyMessageItem> {
                             margin: EdgeInsets.only(
                               top: 26.0,
                             ),
-                            child: Slider(
-                              value: currentPosition.inSeconds.toDouble(),
-                              max: musicLength.inSeconds.toDouble(),
-                              onChanged: (value) {
-                                seekTo(value.toInt());
-                                player.resume();
-                              },
-                              activeColor: Color.fromRGBO(10, 255, 30, 1),
+                            child: LinearPercentIndicator(
+                              percent: _justAudioPlayer.duration == null
+                                  ? 0.0
+                                  : _lastAudioPlayingIndex == widget.index
+                                  ? _currAudioPlayingTime /
+                                  _justAudioPlayer
+                                      .duration!.inMicroseconds
+                                      .ceilToDouble() <=
+                                  1.0
+                                  ? _currAudioPlayingTime /
+                                  _justAudioPlayer
+                                      .duration!.inMicroseconds
+                                      .ceilToDouble()
+                                  : 0.0
+                                  : 0,
+                              backgroundColor: Colors.black26,
+                              progressColor: Colors.lightBlue
+
                             ),
                           ),
                           SizedBox(
@@ -576,7 +540,9 @@ class _MyMessageItemState extends State<MyMessageItem> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      '${formatTime(currentPosition)}',
+                                      _lastAudioPlayingIndex == widget.index
+                                          ? _loadingTime
+                                          : '0:00',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -587,7 +553,9 @@ class _MyMessageItemState extends State<MyMessageItem> {
                                   child: Align(
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      '${formatTime(musicLength - currentPosition)}',
+                                      _lastAudioPlayingIndex == widget.index
+                                          ? _totalDuration
+                                          : '',
                                       style: TextStyle(
                                         color: Colors.white,
                                       ),
@@ -608,6 +576,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                           ? CircleAvatar(
                               radius: 23.0,
                               backgroundColor: Color.fromRGBO(60, 80, 100, 1),
+                    backgroundImage: NetworkImage('${widget.userModel.image}'),
                             )
                           : Text(
                               '${cubit.audioPlayingSpeed.toString().contains('.0') ? cubit.audioPlayingSpeed.toString().split('.')[0] : cubit.audioPlayingSpeed}x',
@@ -616,7 +585,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
                             ),
                       onTap: () {
                         print('Audio Play Speed Tapped');
-                        /* if (mounted) {
+                        if (mounted) {
                           setState(() {
                             if (this._audioPlayingSpeed != 3.0)
                               this._audioPlayingSpeed += 0.5;
@@ -624,9 +593,9 @@ class _MyMessageItemState extends State<MyMessageItem> {
                               this._audioPlayingSpeed = 1.0;
 
                             _justAudioPlayer.setSpeed(this._audioPlayingSpeed);
-                          });*/
-                      },
-                    ),
+                          });
+                        }
+                      }),
                   ),
                 ],
               ),
