@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:chat_app_th/modules/people_screen/cubit/cubit.dart';
 import 'package:chat_app_th/shared/styles/icon_broken.dart';
+import 'package:chat_app_th/widget/image_message.dart';
+import 'package:chat_app_th/widget/text_message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -119,13 +121,7 @@ class MessageItem extends StatelessWidget {
               width: size.width / 2,
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ShowImage(
-                      imageUrl: data['message'],
-                    ),
-                  ),
-                ),
+                onTap: (){},
                 child: Container(
                   height: size.height / 2.5,
                   width: size.width / 2,
@@ -355,24 +351,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
         {
           return Align(
             alignment: Alignment.centerRight,
-            child: Container(
-                padding:
-                    EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(32),
-                    topRight: Radius.circular(32),
-                    bottomRight: Radius.circular(32),
-                  ),
-                  color: Color(0xff006D84),
-                ),
-                child: Text(
-                  widget.data['message'],
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                )),
+            child: TextMessage(message: widget.data['message']),
           );
         }
         break;
@@ -380,31 +359,7 @@ class _MyMessageItemState extends State<MyMessageItem> {
         {
           return Align(
             alignment: Alignment.centerRight,
-            child: Container(
-              height: size.height / 2.5,
-              width: size.width / 2,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-              child: InkWell(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => ShowImage(
-                      imageUrl: widget.data['message'],
-                    ),
-                  ),
-                ),
-                child: Container(
-                  height: size.height / 2.5,
-                  width: size.width / 2,
-                  decoration: BoxDecoration(border: Border.all()),
-                  child: widget.data['message'] != ""
-                      ? Image.network(
-                          widget.data['message'],
-                          fit: BoxFit.fill,
-                        )
-                      : CircularProgressIndicator(),
-                ),
-              ),
-            ),
+            child: ImageMessage(message: widget.data['message']),
           );
         }
         break;
@@ -603,25 +558,6 @@ class _MyMessageItemState extends State<MyMessageItem> {
   }
 }
 
-class ShowImage extends StatelessWidget {
-  final String imageUrl;
-
-  const ShowImage({required this.imageUrl, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-
-    return Scaffold(
-      body: Container(
-        height: size.height,
-        width: size.width,
-        color: Colors.black,
-        child: Image.network(imageUrl),
-      ),
-    );
-  }
-}
 
 class PDFView extends StatelessWidget {
   final String url;
