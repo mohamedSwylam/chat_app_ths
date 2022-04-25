@@ -617,7 +617,17 @@ class PeopleCubit extends Cubit<PeopleStates> {
     required String dateTime,
     required String message,
   }) async {
-
+    List<String> _allowedExtensions = [
+      'pdf',
+      'doc',
+      'docx',
+      'ppt',
+      'pptx',
+      'c',
+      'cpp',
+      'py',
+      'text'
+    ];
     try {
       if (!await Permission.storage.isGranted) takePermissionForStorage();
 
@@ -698,7 +708,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
               setState(() {
                 this._isLoading = false;
               });
-            }*/
+            }
           else {
             showSnackBar(
               context,
