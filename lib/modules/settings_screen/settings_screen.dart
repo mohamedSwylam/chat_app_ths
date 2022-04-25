@@ -15,7 +15,7 @@ class SettingsScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = SettingsCubit.get(context);
         FirebaseService service = FirebaseService();
-        return Center(child:   SizedBox(
+        return Center(child: SizedBox(
           height: 80,
           child: AppBar(
             backgroundColor: Colors.transparent,

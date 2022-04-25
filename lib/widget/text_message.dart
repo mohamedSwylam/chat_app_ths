@@ -7,16 +7,15 @@ class TextMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding:
-        EdgeInsets.only(left: 16, top: 25, bottom: 25, right: 32),
+        padding: EdgeInsets.only(left: 15, top: 15, bottom: 15, right: 15),
         margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(32),
             topRight: Radius.circular(32),
-            bottomRight: Radius.circular(32),
+            bottomLeft: Radius.circular(32),
           ),
-          color: Color(0xff006D84),
+          color: Colors.blue.shade200,
         ),
         child: Text(
           message,

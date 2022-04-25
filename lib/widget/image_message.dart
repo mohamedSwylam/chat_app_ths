@@ -11,7 +11,7 @@ class ImageMessage extends StatelessWidget {
     return Container(
       height: size.height / 2.5,
       width: size.width / 2,
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 20),
       child: InkWell(
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute(

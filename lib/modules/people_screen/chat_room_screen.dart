@@ -23,6 +23,8 @@ class ChatRoomScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
+            backgroundColor: Colors.white,
+            elevation: 0.0,
             titleSpacing: 0.0,
             title: Row(
               mainAxisAlignment: MainAxisAlignment.start,
