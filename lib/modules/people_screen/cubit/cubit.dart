@@ -708,7 +708,7 @@ class PeopleCubit extends Cubit<PeopleStates> {
               setState(() {
                 this._isLoading = false;
               });
-            }
+            }*/
           else {
             showSnackBar(
               context,
