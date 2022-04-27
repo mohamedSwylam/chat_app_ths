@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:generation/Global_Uses/enum_generation.dart';
 import 'package:http/http.dart';
 
 class SendNotification {
