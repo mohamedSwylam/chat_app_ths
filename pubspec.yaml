@@ -86,6 +86,7 @@ dependencies:
   flutter_swiper: ^1.1.6
   pdf_viewer_plugin: ^2.0.1
   firebase_messaging: ^11.2.14
+  flutter_local_notifications: ^9.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
