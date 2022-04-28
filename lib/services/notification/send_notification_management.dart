@@ -3,44 +3,44 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class SendNotification {
-  Future<void> messageNotificationClassifier(ChatMessageTypes messageTypes,
+  Future<void> messageNotificationClassifier(String messageTypes,
       {String textMsg = "",
       required String connectionToken,
       required String currAccountUserName}) async {
     switch (messageTypes) {
-      case ChatMessageTypes.None:
+      case 'None':
         break;
-      case ChatMessageTypes.Text:
+      case 'text':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Message",
             body: textMsg);
         break;
-      case ChatMessageTypes.Image:
+      case 'img':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Image",
             body: "");
         break;
-      case ChatMessageTypes.Video:
+      case 'video':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Video",
             body: "");
         break;
-      case ChatMessageTypes.Document:
+      case 'document':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Document",
             body: "");
         break;
-      case ChatMessageTypes.Audio:
+      case 'audio':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Audio",
             body: "");
         break;
-      case ChatMessageTypes.Location:
+      case 'location':
         await sendNotification(
             token: connectionToken,
             title: "$currAccountUserName Send a Location",
@@ -57,7 +57,7 @@ class SendNotification {
       print("In Notification");
 
       final String _serverKey =
-          "AAAAyXc-1K0:APA91bHfrn53OmcmgNKIT3H5Gt5Rah30msbtxbIP3RBDSZyeZwOPwPqAGRni5L6bAzM-kqD8x5B1Y7Gf85gPBePd9TDOHqaEi4iISaUcdixo3kKnNLaF_LSwma9uX6wO0Dl5KjNNH9q2";
+          "AAAAEIOZbL4:APA91bFhZGG9Jv5dmHUiDL6fzbPBJPwKTSKYICqYzAwIlt36eCGGYeJZRwryJo9MT-8V6AnrcUhk1Sr3WYMP3uM392LybID4KAIoox3DdonsxuBwS9zYIfHqZUQl3qahxjDsU3jfL8xm";
 
       final Response response = await post(
         Uri.parse("https://fcm.googleapis.com/fcm/send"),
