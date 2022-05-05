@@ -5,12 +5,12 @@ import 'package:http/http.dart';
 
   Future<int> sendNotification(
       {required String token,
-      required String title,
       required String body}) async {
     try {
       print("In Notification");
 
       final String _serverKey =
+          "AAAAEIOZbL4:APA91bFhZGG9Jv5dmHUiDL6fzbPBJPwKTSKYICqYzAwIlt36eCGGYeJZRwryJo9MT-8V6AnrcUhk1Sr3WYMP3uM392LybID4KAIoox3DdonsxuBwS9zYIfHqZUQl3qahxjDsU3jfL8xm";
 
       final Response response = await post(
         Uri.parse("https://fcm.googleapis.com/fcm/send"),
