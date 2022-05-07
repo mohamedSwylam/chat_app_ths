@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 
   Future<int> sendNotification(
       {required String token,
+      required String title,
       required String body}) async {
     try {
       print("In Notification");
@@ -42,4 +43,4 @@ import 'package:http/http.dart';
       return 404;
     }
   }
-}
+
