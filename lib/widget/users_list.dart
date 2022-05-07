@@ -56,42 +56,6 @@ class ChatUserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: (){
-        navigateTo(context, ChatRoomScreen(
-          userModel: data,
-        ));
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  '${data['userImage']}'),
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            Row(
-              children: [
-                Text(
-                  '${data['firstName']}',
-                  style: TextStyle(
-                      height: 1.4, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 5,),
-                Text(
-                  '${data['lastName']}',
-                  style: TextStyle(
-                      height: 1.4, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+
   }
 }
